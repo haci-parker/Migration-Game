@@ -1,0 +1,14 @@
+{
+    "name": "Xxxberk4y71.Brown.Editor.Tests",
+    "references": [
+        "Xxxberk4y71.Brown.Editor",
+        "Xxxberk4y71.Brown"
+    ],
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": []
+}

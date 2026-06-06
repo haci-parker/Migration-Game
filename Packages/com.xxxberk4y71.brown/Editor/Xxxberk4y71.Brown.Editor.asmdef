@@ -1,0 +1,10 @@
+{
+    "name": "Xxxberk4y71.Brown.Editor",
+    "references": [
+      "Xxxberk4y71.Brown"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": []
+}

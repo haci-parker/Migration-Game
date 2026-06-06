@@ -1,0 +1,11 @@
+{
+    "name": "Xxxberk4y71.Brown.Tests",
+    "references": [
+        "Xxxberk4y71.Brown"
+    ],
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": []
+}
