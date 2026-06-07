@@ -440,11 +440,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d4f1532b74b44e1a9de7ab55a4c2f10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ClimateSpawner
-  defaultClimate: {fileID: 0}
+  defaultClimate: {fileID: 8406815072130278815, guid: 9bf013d1f425446b38e42dee91c6db9f, type: 3}
   defaultClimateName: iliman_objects
-  ilimanPrefab: {fileID: 1652702251435889702, guid: 0f45cd14b67ae47daa3dcd15b61598f0, type: 3}
-  tundraPrefab: {fileID: 262880763306336426, guid: b8d846cdb92324da0bd63440e29a79b6, type: 3}
-  colPrefab: {fileID: 1257829865785269795, guid: ea5d577d33cd948e193c5dc42a0856e8, type: 3}
+  ilimanPrefab: {fileID: 8406815072130278815, guid: 9bf013d1f425446b38e42dee91c6db9f, type: 3}
+  tundraPrefab: {fileID: 7221608018010849387, guid: dae8ca29bc249420ba9428013b4717da, type: 3}
+  colPrefab: {fileID: 3554773971998067125, guid: e583db935dab14f1faea222751908f77, type: 3}
   segmentDistance: 300
   fixedY: 0
   fixedZ: -10.05653
@@ -1921,6 +1921,7 @@ GameObject:
   - component: {fileID: 1823859695}
   - component: {fileID: 1823859694}
   - component: {fileID: 1823859699}
+  - component: {fileID: 1823859700}
   m_Layer: 0
   m_Name: Clan
   m_TagString: Player
@@ -2060,9 +2061,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1ce512f63f874a92ad7da007d5c7e40, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ClanMovement
-  clanSpeed: 15
+  clanSpeed: 10
   journeyStartX: -25
   journeyDistance: 4800
+--- !u!114 &1823859700
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1823859692}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f43598dc89b401d9e8f1461ce32ef9a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ClanClimateDetector
+  currentClimate: 0
+  raycastDistance: 5
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  resourceDrainManager: {fileID: 2058458158}
 --- !u!1 &1868852829
 GameObject:
   m_ObjectHideFlags: 0
@@ -2386,6 +2405,55 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2058458157
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2058458159}
+  - component: {fileID: 2058458158}
+  m_Layer: 0
+  m_Name: ResourceDrainManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2058458158
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2058458157}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c9a43b191904a09836f9dd735317bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ResourceDrainManager
+  currentClimate: 0
+  health: 100
+  food: 100
+  stamina: 100
+  money: 100
+--- !u!4 &2058458159
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2058458157}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 105.93339, y: -0, z: 24.00749}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2110417404
 GameObject:
   m_ObjectHideFlags: 0
@@ -2660,7 +2728,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2142612179}
   m_CullTransparentMesh: 1
---- !u!1001 &5383629388181730496
+--- !u!1001 &6331489742808270597
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -2668,59 +2736,55 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 103310169502819860, guid: 0f45cd14b67ae47daa3dcd15b61598f0, type: 3}
+    - target: {fileID: 7682940099936358121, guid: 9bf013d1f425446b38e42dee91c6db9f, type: 3}
       propertyPath: m_LocalPosition.x
       value: -5
       objectReference: {fileID: 0}
-    - target: {fileID: 103310169502819860, guid: 0f45cd14b67ae47daa3dcd15b61598f0, type: 3}
+    - target: {fileID: 7682940099936358121, guid: 9bf013d1f425446b38e42dee91c6db9f, type: 3}
       propertyPath: m_LocalPosition.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 103310169502819860, guid: 0f45cd14b67ae47daa3dcd15b61598f0, type: 3}
+    - target: {fileID: 7682940099936358121, guid: 9bf013d1f425446b38e42dee91c6db9f, type: 3}
       propertyPath: m_LocalPosition.z
       value: -10.05653
       objectReference: {fileID: 0}
-    - target: {fileID: 103310169502819860, guid: 0f45cd14b67ae47daa3dcd15b61598f0, type: 3}
+    - target: {fileID: 7682940099936358121, guid: 9bf013d1f425446b38e42dee91c6db9f, type: 3}
       propertyPath: m_LocalRotation.w
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 103310169502819860, guid: 0f45cd14b67ae47daa3dcd15b61598f0, type: 3}
+    - target: {fileID: 7682940099936358121, guid: 9bf013d1f425446b38e42dee91c6db9f, type: 3}
       propertyPath: m_LocalRotation.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 103310169502819860, guid: 0f45cd14b67ae47daa3dcd15b61598f0, type: 3}
+    - target: {fileID: 7682940099936358121, guid: 9bf013d1f425446b38e42dee91c6db9f, type: 3}
       propertyPath: m_LocalRotation.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 103310169502819860, guid: 0f45cd14b67ae47daa3dcd15b61598f0, type: 3}
+    - target: {fileID: 7682940099936358121, guid: 9bf013d1f425446b38e42dee91c6db9f, type: 3}
       propertyPath: m_LocalRotation.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 103310169502819860, guid: 0f45cd14b67ae47daa3dcd15b61598f0, type: 3}
+    - target: {fileID: 7682940099936358121, guid: 9bf013d1f425446b38e42dee91c6db9f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 103310169502819860, guid: 0f45cd14b67ae47daa3dcd15b61598f0, type: 3}
+    - target: {fileID: 7682940099936358121, guid: 9bf013d1f425446b38e42dee91c6db9f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 103310169502819860, guid: 0f45cd14b67ae47daa3dcd15b61598f0, type: 3}
+    - target: {fileID: 7682940099936358121, guid: 9bf013d1f425446b38e42dee91c6db9f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1652702251435889702, guid: 0f45cd14b67ae47daa3dcd15b61598f0, type: 3}
+    - target: {fileID: 8406815072130278815, guid: 9bf013d1f425446b38e42dee91c6db9f, type: 3}
       propertyPath: m_Name
       value: iliman_objects
-      objectReference: {fileID: 0}
-    - target: {fileID: 2917432796323384998, guid: 0f45cd14b67ae47daa3dcd15b61598f0, type: 3}
-      propertyPath: m_Name
-      value: climate_creation
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 0f45cd14b67ae47daa3dcd15b61598f0, type: 3}
+  m_SourcePrefab: {fileID: 100100000, guid: 9bf013d1f425446b38e42dee91c6db9f, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -2734,5 +2798,6 @@ SceneRoots:
   - {fileID: 632747828}
   - {fileID: 1638695366}
   - {fileID: 122903378}
-  - {fileID: 5383629388181730496}
+  - {fileID: 6331489742808270597}
   - {fileID: 207030075}
+  - {fileID: 2058458159}
