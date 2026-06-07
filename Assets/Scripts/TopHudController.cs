@@ -58,6 +58,7 @@ public class TopHudController : MonoBehaviour
         public TopHudStat Stat;
         public TMP_Text ValueText;
         public Image FillImage;
+        public RectTransform FillRect;
     }
 
     [Header("Icons")]
@@ -801,12 +802,9 @@ public class TopHudController : MonoBehaviour
         Image fillImage = CreateImage("BarFill", barBackRect, barFillColor);
         RectTransform fillRect = fillImage.rectTransform;
         fillRect.anchorMin = new Vector2(0f, 0f);
-        fillRect.anchorMax = new Vector2(1f, 1f);
+        fillRect.anchorMax = new Vector2(0f, 1f);
         fillRect.offsetMin = Vector2.zero;
         fillRect.offsetMax = Vector2.zero;
-        fillImage.type = Image.Type.Filled;
-        fillImage.fillMethod = Image.FillMethod.Horizontal;
-        fillImage.fillOrigin = 0;
 
         CreateBarOutline(barBackRect);
 
@@ -817,7 +815,8 @@ public class TopHudController : MonoBehaviour
         {
             Stat = stat,
             ValueText = valueText,
-            FillImage = fillImage
+            FillImage = fillImage,
+            FillRect = fillRect
         };
     }
 
@@ -840,8 +839,11 @@ public class TopHudController : MonoBehaviour
             if (view.ValueText != null)
                 view.ValueText.text = Mathf.RoundToInt(value) + " / " + Mathf.RoundToInt(maxValue);
 
-            if (view.FillImage != null)
-                view.FillImage.fillAmount = normalizedValue;
+            if (view.FillRect != null)
+            {
+                view.FillRect.anchorMax = new Vector2(normalizedValue, 1f);
+                view.FillRect.offsetMax = Vector2.zero;
+            }
         }
     }
 

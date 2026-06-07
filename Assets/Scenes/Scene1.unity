@@ -2060,7 +2060,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1ce512f63f874a92ad7da007d5c7e40, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ClanMovement
-  clanSpeed: 1
+  clanSpeed: 15
+  journeyStartX: -25
+  journeyDistance: 4800
 --- !u!1 &1868852829
 GameObject:
   m_ObjectHideFlags: 0

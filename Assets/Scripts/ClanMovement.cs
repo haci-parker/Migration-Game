@@ -3,18 +3,44 @@ using UnityEngine;
 public class ClanMovement : MonoBehaviour
 {
 
-    [SerializeField] private float clanSpeed = 1f;
+    [SerializeField] private float clanSpeed = 2f;
+    [SerializeField] private float journeyStartX = -25f;
+    [SerializeField] private float journeyDistance = 4800f;
+
+    private bool hasWon;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        UpdateJourneyProgress();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (hasWon)
+            return;
+
         Vector3 movement = Vector3.right * clanSpeed * Time.deltaTime;
         transform.position += movement;
+        UpdateJourneyProgress();
+    }
+
+    private void UpdateJourneyProgress()
+    {
+        if (journeyDistance <= 0f)
+            return;
+
+        float travelledDistance = transform.position.x - journeyStartX;
+        float journeyPercent = Mathf.Clamp01(travelledDistance / journeyDistance) * 100f;
+
+        if (GameManager.Instance != null)
+            GameManager.Instance.JourneyProgress = journeyPercent;
+
+        if (journeyPercent >= 100f && !hasWon)
+        {
+            hasWon = true;
+            Debug.Log("Oyun kazanildi.");
+        }
     }
 }
