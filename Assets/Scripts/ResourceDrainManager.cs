@@ -48,6 +48,12 @@ public class ResourceDrainManager : MonoBehaviour
         staminaTimer = 0f;
     }
 
+    public void ApplyChallengeEffects(int healthDelta, int foodDelta)
+    {
+        health = Mathf.Clamp(health + healthDelta, 0, 100);
+        food = Mathf.Clamp(food + foodDelta, 0, 100);
+    }
+
     public float GetBaseHealthInterval()
     {
         switch (currentClimate)

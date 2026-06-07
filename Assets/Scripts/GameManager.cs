@@ -67,7 +67,7 @@ public class GameManager : MonoBehaviour
     private float _journeyProgress  = 0f;
     private int   _gold             = 0;
     private int   _population       = 10;
-    private float _speed            = 1f;
+    private float _speed            = 100f;
     private Climate _climate        = Climate.Iliman;
 
     // ──────────────────────────────────────────────
@@ -150,7 +150,7 @@ public class GameManager : MonoBehaviour
         get => _speed;
         set
         {
-            _speed = value;
+            _speed = Mathf.Clamp(value, 0f, 100f);
             UpdateSpeedUI();
         }
     }
@@ -233,7 +233,7 @@ public class GameManager : MonoBehaviour
     private void UpdateSpeedUI()
     {
         if (speedText != null)
-            speedText.text = "Hız: " + _speed.ToString("F1");
+            speedText.text = "Hız: " + Mathf.RoundToInt(_speed) + "%";
     }
 
     private void UpdateClimateUI()

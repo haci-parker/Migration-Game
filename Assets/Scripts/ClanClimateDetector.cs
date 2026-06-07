@@ -6,6 +6,7 @@ public class ClanClimateDetector : MonoBehaviour
     public float raycastDistance = 5f;
     public LayerMask groundLayer = ~0;
     public ResourceDrainManager resourceDrainManager;
+    public ClimateSpawner climateSpawner;
 
     private bool hasDetectedClimate;
 
@@ -45,5 +46,14 @@ public class ClanClimateDetector : MonoBehaviour
 
         if (resourceDrainManager != null)
             resourceDrainManager.SetClimate(currentClimate);
+
+        if (ChallengeManager.Instance == null)
+            new GameObject("ChallengeManager").AddComponent<ChallengeManager>();
+
+        if (climateSpawner == null)
+            climateSpawner = FindFirstObjectByType<ClimateSpawner>();
+
+        float segmentDistance = climateSpawner != null ? climateSpawner.segmentDistance : ChallengeManager.Instance.fallbackSegmentDistance;
+        ChallengeManager.Instance.ScheduleChallenge(currentClimate, transform.position.x, segmentDistance);
     }
 }

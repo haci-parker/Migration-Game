@@ -21,7 +21,11 @@ public class ClanMovement : MonoBehaviour
         if (hasWon)
             return;
 
-        Vector3 movement = Vector3.right * clanSpeed * Time.deltaTime;
+        float speedMultiplier = 1f;
+        if (GameManager.Instance != null)
+            speedMultiplier = Mathf.Clamp(GameManager.Instance.Speed / 100f, 0f, 2f);
+
+        Vector3 movement = Vector3.right * clanSpeed * speedMultiplier * Time.deltaTime;
         transform.position += movement;
         UpdateJourneyProgress();
     }
