@@ -961,6 +961,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 228632424}
+  - {fileID: 971516092}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -1196,6 +1197,77 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 940492485}
   m_CullTransparentMesh: 1
+--- !u!1 &971516091
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 971516092}
+  - component: {fileID: 971516093}
+  m_Layer: 5
+  m_Name: TopHudController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &971516092
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 971516091}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 632747828}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &971516093
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 971516091}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a68c5b9cfd94c634198480b97fc280ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TopHudController
+  healthIcon: {fileID: 0}
+  foodIcon: {fileID: 0}
+  journeyIcon: {fileID: 0}
+  durabilityIcon: {fileID: 0}
+  topHeight: 150
+  gradientHeight: 220
+  statsAreaHeight: 86
+  horizontalPadding: 42
+  statWidth: 260
+  statSpacing: 28
+  iconSize: 34
+  barHeight: 8
+  barTopOffset: -47
+  panelTopColor: {r: 0, g: 0, b: 0, a: 0.99}
+  panelMiddleColor: {r: 0, g: 0, b: 0, a: 0.78}
+  panelBottomColor: {r: 0, g: 0, b: 0, a: 0}
+  lineColor: {r: 1, g: 1, b: 1, a: 0.16}
+  iconColor: {r: 0.72, g: 0.72, b: 0.72, a: 1}
+  labelColor: {r: 0.78, g: 0.74, b: 0.68, a: 1}
+  valueColor: {r: 0.84, g: 0.82, b: 0.78, a: 1}
+  barBackColor: {r: 0.05, g: 0.05, b: 0.05, a: 0.95}
+  barFillColor: {r: 0.72, g: 0.12, b: 0.12, a: 1}
+  barOutlineColor: {r: 0.72, g: 0.72, b: 0.72, a: 0.16}
 --- !u!1 &1079724289
 GameObject:
   m_ObjectHideFlags: 0
