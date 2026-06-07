@@ -39,8 +39,8 @@ public class TopHudController : MonoBehaviour
     public float statWidth = 260f;
     public float statSpacing = 28f;
     public float iconSize = 34f;
-    public float barHeight = 8f;
-    public float barTopOffset = -47f;
+    public float barHeight = 14f;
+    public float barTopOffset = -62f;
 
     [Header("Menu")]
     public Sprite menuIcon;
@@ -64,8 +64,8 @@ public class TopHudController : MonoBehaviour
 
     [Header("Typography")]
     public TMP_FontAsset fontAsset;
-    public float labelFontSize = 18f;
-    public float valueFontSize = 17f;
+    public float labelFontSize = 22f;
+    public float valueFontSize = 21f;
     public FontStyles labelFontStyle = FontStyles.Normal;
     public FontStyles valueFontStyle = FontStyles.Normal;
     public float characterSpacing = 0f;
@@ -202,16 +202,16 @@ public class TopHudController : MonoBehaviour
         float contentLeft = horizontalPadding;
         float contentRight = horizontalPadding * 0.7f;
 
-        labelRect.anchoredPosition = new Vector2(contentLeft, -20f);
-        labelRect.sizeDelta = new Vector2(110f, 26f);
+        labelRect.anchoredPosition = new Vector2(contentLeft, -28f);
+        labelRect.sizeDelta = new Vector2(126f, 34f);
 
         TMP_Text valueText = CreateText("Value", statRect, "", valueFontSize, valueColor, TextAlignmentOptions.Right, valueFontStyle);
         RectTransform valueRect = valueText.rectTransform;
         valueRect.anchorMin = new Vector2(1f, 1f);
         valueRect.anchorMax = new Vector2(1f, 1f);
         valueRect.pivot = new Vector2(1f, 1f);
-        valueRect.anchoredPosition = new Vector2(-contentRight, -20f);
-        valueRect.sizeDelta = new Vector2(94f, 26f);
+        valueRect.anchoredPosition = new Vector2(-contentRight, -28f);
+        valueRect.sizeDelta = new Vector2(118f, 34f);
 
         Image barBack = CreateImage("BarBack", statRect, barBackColor);
         RectTransform barBackRect = barBack.rectTransform;
