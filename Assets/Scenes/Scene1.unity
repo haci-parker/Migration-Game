@@ -1245,10 +1245,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a68c5b9cfd94c634198480b97fc280ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TopHudController
-  healthIcon: {fileID: 0}
-  foodIcon: {fileID: 0}
-  journeyIcon: {fileID: 0}
-  durabilityIcon: {fileID: 0}
+  healthIcon: {fileID: 21300000, guid: 77d3510679340a142954187cb4c40359, type: 3}
+  foodIcon: {fileID: 21300000, guid: 4576ae501e0f31b4d90a7bdcb4bf4d5d, type: 3}
+  journeyIcon: {fileID: 21300000, guid: 84f69cc3ef01e35449de6fb5de5f9d8a, type: 3}
+  durabilityIcon: {fileID: 21300000, guid: 1f4beab97b07a544f982170960835e5e, type: 3}
   topHeight: 150
   gradientHeight: 281.7
   statsAreaHeight: 86
@@ -1256,10 +1256,19 @@ MonoBehaviour:
   horizontalPadding: 42
   statWidth: 260
   statSpacing: 28
+<<<<<<< Updated upstream
   iconSize: 34
   barHeight: 14
   barTopOffset: -62
   menuIcon: {fileID: 0}
+=======
+  iconSize: 52.4
+  iconLeftPadding: -15
+  contentAfterIcon: 48
+  barHeight: 8
+  barTopOffset: -47
+  menuIcon: {fileID: 21300000, guid: 5d5993ece0a962843810cb79df904c68, type: 3}
+>>>>>>> Stashed changes
   menuRightPadding: 34
   menuButtonSize: {x: 46, y: 38}
   menuIconSize: {x: 24, y: 18}
