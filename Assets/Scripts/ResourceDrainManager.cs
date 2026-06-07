@@ -15,6 +15,11 @@ public class ResourceDrainManager : MonoBehaviour
     private float foodTimer;
     private float staminaTimer;
 
+    private void Start()
+    {
+        SyncResourcesToGameManager();
+    }
+
     private void Update()
     {
         healthTimer += Time.deltaTime;
@@ -59,12 +64,12 @@ public class ResourceDrainManager : MonoBehaviour
         switch (currentClimate)
         {
             case ClimateType.Col:
-                return 14f;
+                return 4f;
             case ClimateType.Tundra:
-                return 12f;
+                return 3.5f;
             case ClimateType.Iliman:
             default:
-                return 18f;
+                return 5f;
         }
     }
 
@@ -73,12 +78,12 @@ public class ResourceDrainManager : MonoBehaviour
         switch (currentClimate)
         {
             case ClimateType.Col:
-                return 5f;
+                return 1.5f;
             case ClimateType.Tundra:
-                return 8f;
+                return 2.5f;
             case ClimateType.Iliman:
             default:
-                return 10f;
+                return 3f;
         }
     }
 
@@ -87,48 +92,54 @@ public class ResourceDrainManager : MonoBehaviour
         switch (currentClimate)
         {
             case ClimateType.Col:
-                return 8f;
+                return 2.5f;
             case ClimateType.Tundra:
-                return 5f;
+                return 1.5f;
             case ClimateType.Iliman:
             default:
-                return 12f;
+                return 4f;
         }
     }
 
     public float GetEffectiveHealthInterval()
     {
         if (food <= 0 || stamina <= 0)
-            return 3f;
+            return 2f;
 
         float effectiveHealthInterval = GetBaseHealthInterval() - GetFoodPenalty() - GetStaminaPenalty();
-        return Mathf.Max(effectiveHealthInterval, 3f);
+        return Mathf.Max(effectiveHealthInterval, 2f);
     }
 
     public int GetFoodPenalty()
     {
-        if (food >= 50)
+        if (food >= 60)
             return 0;
 
-        if (food >= 20)
+        if (food >= 30)
             return 2;
 
-        if (food > 0)
+        if (food >= 10)
             return 4;
+
+        if (food > 0)
+            return 6;
 
         return 0;
     }
 
     public int GetStaminaPenalty()
     {
-        if (stamina >= 50)
+        if (stamina >= 60)
             return 0;
 
-        if (stamina >= 20)
+        if (stamina >= 30)
             return 2;
 
-        if (stamina > 0)
+        if (stamina >= 10)
             return 4;
+
+        if (stamina > 0)
+            return 6;
 
         return 0;
     }
@@ -139,7 +150,10 @@ public class ResourceDrainManager : MonoBehaviour
         health = Mathf.Clamp(health - 1, 0, 100);
 
         if (health != oldHealth)
+        {
+            SyncResourcesToGameManager();
             Debug.Log("Health azaldı: " + health);
+        }
     }
 
     public void DrainFood()
@@ -148,7 +162,10 @@ public class ResourceDrainManager : MonoBehaviour
         food = Mathf.Clamp(food - 1, 0, 100);
 
         if (food != oldFood)
+        {
+            SyncResourcesToGameManager();
             Debug.Log("Food azaldı: " + food);
+        }
     }
 
     public void DrainStamina()
@@ -157,6 +174,19 @@ public class ResourceDrainManager : MonoBehaviour
         stamina = Mathf.Clamp(stamina - 1, 0, 100);
 
         if (stamina != oldStamina)
+        {
+            SyncResourcesToGameManager();
             Debug.Log("Stamina azaldı: " + stamina);
+        }
+    }
+
+    private void SyncResourcesToGameManager()
+    {
+        if (GameManager.Instance == null)
+            return;
+
+        GameManager.Instance.Health = health;
+        GameManager.Instance.FoodSupplies = food;
+        GameManager.Instance.Durability = stamina;
     }
 }
