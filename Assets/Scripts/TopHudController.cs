@@ -2,6 +2,7 @@ using TMPro;
 using UnityEngine.EventSystems;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.Video;
 
@@ -64,7 +65,6 @@ public class TopHudController : MonoBehaviour
     private class BottomMetricView
     {
         public TMP_Text ValueText;
-        public TMP_Text SubText;
     }
 
     [Header("Icons")]
@@ -76,7 +76,6 @@ public class TopHudController : MonoBehaviour
     [Header("Bottom HUD Sprites")]
     public Sprite bottomPanelSprite;
     public Sprite bottomMetricFrameSprite;
-    public Sprite bottomSpeedIcon;
     public Sprite bottomPopulationIcon;
     public Sprite bottomGoldIcon;
     public Sprite bottomClimateIcon;
@@ -106,7 +105,6 @@ public class TopHudController : MonoBehaviour
     public float bottomMetricIconSize = 82f;
     public float bottomMetricLabelSize = 18f;
     public float bottomMetricValueSize = 34f;
-    public float bottomMetricSubSize = 15f;
 
     [Header("Menu")]
     public Sprite menuIcon;
@@ -159,7 +157,9 @@ public class TopHudController : MonoBehaviour
     public float characterSpacing = 0f;
 
     private readonly StatView[] _statViews = new StatView[4];
-    private readonly BottomMetricView[] _bottomMetricViews = new BottomMetricView[4];
+    private static bool s_startGameAfterSceneReload;
+
+    private readonly BottomMetricView[] _bottomMetricViews = new BottomMetricView[3];
     private readonly float[] _gameplayTimeScales = { 1f, 2f, 5f };
     private RectTransform _root;
     private RectTransform _bottomRoot;
@@ -175,6 +175,7 @@ public class TopHudController : MonoBehaviour
     private AudioSource _mainMenuAudioSource;
     private AudioSource _mainMenuMusicSource;
     private RenderTexture _mainMenuVideoTexture;
+    private bool _hasActiveRun;
     private bool _gameStarted;
     private bool _gameEnded;
     private int _gameplayTimeScaleIndex;
@@ -189,6 +190,12 @@ public class TopHudController : MonoBehaviour
         BuildVictoryScreen();
         BuildDefeatScreen();
         ShowMenu(MenuMode.Main);
+
+        if (s_startGameAfterSceneReload)
+        {
+            s_startGameAfterSceneReload = false;
+            BeginNewGameSession();
+        }
     }
 
     private void Update()
@@ -317,10 +324,9 @@ public class TopHudController : MonoBehaviour
         metrics.offsetMin = new Vector2(18f, 0f);
         metrics.offsetMax = new Vector2(-(bottomContinueWidth + 18f), 0f);
 
-        _bottomMetricViews[0] = CreateBottomMetric(metrics, 0f, "Hız", bottomSpeedIcon, "ORTA");
-        _bottomMetricViews[1] = CreateBottomMetric(metrics, 1f, "Nüfus", bottomPopulationIcon, "KAPASİTE");
-        _bottomMetricViews[2] = CreateBottomMetric(metrics, 2f, "Altın", bottomGoldIcon, "PARA BİRİMİ");
-        _bottomMetricViews[3] = CreateBottomMetric(metrics, 3f, "İklim", bottomClimateIcon, "ILIMAN");
+        _bottomMetricViews[0] = CreateBottomMetric(metrics, 0f, "Nüfus", bottomPopulationIcon);
+        _bottomMetricViews[1] = CreateBottomMetric(metrics, 1f, "Altın", bottomGoldIcon);
+        _bottomMetricViews[2] = CreateBottomMetric(metrics, 2f, "İklim", bottomClimateIcon);
 
         CreateBottomSun(metrics);
         CreateBottomContinue(panel);
@@ -346,12 +352,12 @@ public class TopHudController : MonoBehaviour
         return panel;
     }
 
-    private BottomMetricView CreateBottomMetric(RectTransform parent, float index, string label, Sprite icon, string subText)
+    private BottomMetricView CreateBottomMetric(RectTransform parent, float index, string label, Sprite icon)
     {
         GameObject metricObject = CreateUIObject(label + "BottomMetric", parent);
         RectTransform metric = metricObject.GetComponent<RectTransform>();
-        float slotMin = index / 4.65f;
-        float slotMax = (index + 1f) / 4.65f;
+        float slotMin = index / 3.65f;
+        float slotMax = (index + 1f) / 3.65f;
         metric.anchorMin = new Vector2(slotMin, 0f);
         metric.anchorMax = new Vector2(slotMax, 1f);
         metric.offsetMin = new Vector2(10f, 12f);
@@ -394,20 +400,12 @@ public class TopHudController : MonoBehaviour
         valueRect.anchorMax = new Vector2(1f, 0.5f);
         valueRect.pivot = new Vector2(0f, 0.5f);
         valueRect.anchoredPosition = new Vector2(bottomMetricIconSize + 14f, -4f);
-        valueRect.sizeDelta = new Vector2(-(bottomMetricIconSize + 20f), 42f);
+        valueRect.sizeDelta = new Vector2(-(bottomMetricIconSize + 20f), 48f);
 
-        TMP_Text sub = CreateText("SubText", metric, subText, bottomMetricSubSize, menuDisabledColor, TextAlignmentOptions.Left, FontStyles.Normal);
-        RectTransform subRect = sub.rectTransform;
-        subRect.anchorMin = new Vector2(0f, 0f);
-        subRect.anchorMax = new Vector2(1f, 0f);
-        subRect.pivot = new Vector2(0f, 0f);
-        subRect.anchoredPosition = new Vector2(bottomMetricIconSize + 14f, 6f);
-        subRect.sizeDelta = new Vector2(-(bottomMetricIconSize + 20f), 22f);
-
-        if (index < 3f)
+        if (index < 2f)
             CreateSmallLine(metric);
 
-        return new BottomMetricView { ValueText = valueText, SubText = sub };
+        return new BottomMetricView { ValueText = valueText };
     }
 
     private void CreateBottomSun(RectTransform parent)
@@ -670,8 +668,9 @@ public class TopHudController : MonoBehaviour
         _startButton = CreateSpriteMenuButton("StartButton", buttons, newGameButtonSprite, "YENI OYUN", 0f, false);
         _startButton.onClick.AddListener(StartGame);
 
-        _continueButton = CreateSpriteMenuButton("ContinueButton", buttons, continueButtonSprite, "DEVAM ET", -mainMenuButtonSpacing, true);
-        _continueButton.interactable = false;
+        _continueButton = CreateSpriteMenuButton("ContinueButton", buttons, continueButtonSprite, "DEVAM ET", -mainMenuButtonSpacing, false);
+        _continueButton.onClick.AddListener(ResumeGame);
+        SetContinueButtonState(false);
 
         Button settingsButton = CreateSpriteMenuButton("SettingsButton", buttons, settingsButtonSprite, "AYARLAR", -mainMenuButtonSpacing * 2f, false);
         settingsButton.onClick.AddListener(OpenSettings);
@@ -1163,8 +1162,7 @@ public class TopHudController : MonoBehaviour
         if (_bottomRoot != null)
             _bottomRoot.gameObject.SetActive(!isMainMenu);
 
-        if (_continueButton != null)
-            _continueButton.interactable = false;
+        SetContinueButtonState(!isMainMenu && _hasActiveRun && _gameStarted && !_gameEnded);
 
         if (_startButton != null)
             _startButton.gameObject.SetActive(true);
@@ -1199,6 +1197,7 @@ public class TopHudController : MonoBehaviour
     {
         _gameStarted = false;
         _gameEnded = true;
+        _hasActiveRun = false;
 
         if (_menuRoot != null)
             _menuRoot.gameObject.SetActive(false);
@@ -1219,6 +1218,7 @@ public class TopHudController : MonoBehaviour
     {
         _gameStarted = false;
         _gameEnded = true;
+        _hasActiveRun = false;
 
         if (_menuRoot != null)
             _menuRoot.gameObject.SetActive(false);
@@ -1256,8 +1256,45 @@ public class TopHudController : MonoBehaviour
         // Settings panel is not implemented yet; keep the current menu state intact.
     }
 
+    private void SetContinueButtonState(bool canContinue)
+    {
+        if (_continueButton == null)
+            return;
+
+        _continueButton.interactable = canContinue;
+
+        MenuButtonView view = _continueButton.GetComponent<MenuButtonView>();
+        if (view != null)
+        {
+            view.AlwaysDesaturated = !canContinue;
+            view.SetSaturation(0f);
+        }
+    }
+
     private void StartGame()
     {
+        s_startGameAfterSceneReload = true;
+        Time.timeScale = 1f;
+
+        if (GameManager.Instance != null)
+            GameManager.Instance.ResetGameState();
+
+        Scene activeScene = SceneManager.GetActiveScene();
+        if (activeScene.buildIndex >= 0)
+        {
+            SceneManager.LoadScene(activeScene.buildIndex);
+            return;
+        }
+
+        Debug.LogWarning("Aktif sahne Build Settings içinde değil. Yeni oyun sahne reload yapmadan sıfırlandı.");
+        s_startGameAfterSceneReload = false;
+        BeginNewGameSession();
+    }
+
+    private void BeginNewGameSession()
+    {
+        ResetGameForNewRun();
+        _hasActiveRun = true;
         _gameStarted = true;
         _gameEnded = false;
         _gameplayTimeScaleIndex = 0;
@@ -1267,10 +1304,24 @@ public class TopHudController : MonoBehaviour
 
     private void ResumeGame()
     {
-        if (!_gameStarted)
+        if (!_gameStarted || _gameEnded)
             return;
 
         HideMenu();
+    }
+
+    private void ResetGameForNewRun()
+    {
+        if (GameManager.Instance != null)
+            GameManager.Instance.ResetGameState();
+
+        ResourceDrainManager resourceDrainManager = FindFirstObjectByType<ResourceDrainManager>();
+        if (resourceDrainManager != null)
+            resourceDrainManager.ResetResources();
+
+        ClanMovement clanMovement = FindFirstObjectByType<ClanMovement>();
+        if (clanMovement != null)
+            clanMovement.ResetJourney();
     }
 
     private void HideMenu()
@@ -1446,13 +1497,12 @@ public class TopHudController : MonoBehaviour
 
     private void UpdateBottomHud(GameManager gameManager)
     {
-        SetBottomMetric(0, FormatSpeed(gameManager.Speed), GetSpeedLabel(gameManager.Speed));
-        SetBottomMetric(1, gameManager.Population + " / 20", "KAPASITE");
-        SetBottomMetric(2, gameManager.Gold.ToString(), "PARA BIRIMI");
-        SetBottomMetric(3, GetClimateTemperature(gameManager.CurrentClimate), GetClimateLabel(gameManager.CurrentClimate));
+        SetBottomMetric(0, gameManager.Population + " / 20");
+        SetBottomMetric(1, gameManager.Gold.ToString());
+        SetBottomMetric(2, GetClimateLabel(gameManager.CurrentClimate));
     }
 
-    private void SetBottomMetric(int index, string value, string subText)
+    private void SetBottomMetric(int index, string value)
     {
         if (index < 0 || index >= _bottomMetricViews.Length)
             return;
@@ -1463,35 +1513,20 @@ public class TopHudController : MonoBehaviour
 
         if (view.ValueText != null)
             view.ValueText.text = value;
-
-        if (view.SubText != null)
-            view.SubText.text = subText;
-    }
-
-    private string FormatSpeed(float speed)
-    {
-        return (speed / 10f).ToString("0.0");
-    }
-
-    private string GetSpeedLabel(float speed)
-    {
-        if (speed < GameManager.DefaultSpeedKmh * 0.75f)
-            return "YAVAS";
-
-        if (speed > GameManager.DefaultSpeedKmh * 1.25f)
-            return "HIZLI";
-
-        return "ORTA";
-    }
-
-    private string GetClimateTemperature(GameManager.Climate climate)
-    {
-        return climate == GameManager.Climate.Iliman ? "22C" : "43C";
     }
 
     private string GetClimateLabel(GameManager.Climate climate)
     {
-        return climate == GameManager.Climate.Iliman ? "ILIMAN" : "ASIRI SICAK";
+        switch (climate)
+        {
+            case GameManager.Climate.Tundra:
+                return "TUNDRA";
+            case GameManager.Climate.Col:
+                return "ÇÖL";
+            case GameManager.Climate.Iliman:
+            default:
+                return "ILIMAN";
+        }
     }
 
     private float GetValue(GameManager gameManager, TopHudStat stat)

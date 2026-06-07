@@ -24,7 +24,8 @@ public class GameManager : MonoBehaviour
     public enum Climate
     {
         Iliman,  // Temperate (Ilıman)
-        Sert     // Harsh
+        Tundra,
+        Col
     }
 
     // ──────────────────────────────────────────────
@@ -242,9 +243,7 @@ public class GameManager : MonoBehaviour
     {
         if (climateText != null)
         {
-            // Display the climate name in Turkish
-            string climateName = _climate == Climate.Iliman ? "Ilıman" : "Sert";
-            climateText.text = "İklim: " + climateName;
+            climateText.text = "İklim: " + GetClimateDisplayName(_climate);
         }
     }
 
@@ -268,5 +267,31 @@ public class GameManager : MonoBehaviour
         UpdateSpeedUI();
         UpdateClimateUI();
         UpdateJourneyProgressUI();
+    }
+
+    public void ResetGameState()
+    {
+        Health = 100f;
+        FoodSupplies = 100f;
+        Durability = 100f;
+        JourneyProgress = 0f;
+        Gold = 0;
+        Population = 10;
+        Speed = DefaultSpeedKmh;
+        CurrentClimate = Climate.Iliman;
+    }
+
+    public static string GetClimateDisplayName(Climate climate)
+    {
+        switch (climate)
+        {
+            case Climate.Tundra:
+                return "Tundra";
+            case Climate.Col:
+                return "Çöl";
+            case Climate.Iliman:
+            default:
+                return "Ilıman";
+        }
     }
 }

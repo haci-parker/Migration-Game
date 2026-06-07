@@ -18,6 +18,7 @@ public class ResourceDrainManager : MonoBehaviour
     private void Start()
     {
         SyncResourcesToGameManager();
+        SyncClimateToGameManager();
     }
 
     private void Update()
@@ -51,12 +52,30 @@ public class ResourceDrainManager : MonoBehaviour
         healthTimer = 0f;
         foodTimer = 0f;
         staminaTimer = 0f;
+
+        SyncClimateToGameManager();
     }
 
     public void ApplyChallengeEffects(int healthDelta, int foodDelta)
     {
         health = Mathf.Clamp(health + healthDelta, 0, 100);
         food = Mathf.Clamp(food + foodDelta, 0, 100);
+        SyncResourcesToGameManager();
+    }
+
+    public void ResetResources()
+    {
+        health = 100;
+        food = 100;
+        stamina = 100;
+        money = 100;
+        currentClimate = ClimateType.Iliman;
+        healthTimer = 0f;
+        foodTimer = 0f;
+        staminaTimer = 0f;
+
+        SyncResourcesToGameManager();
+        SyncClimateToGameManager();
     }
 
     public float GetBaseHealthInterval()
@@ -188,5 +207,25 @@ public class ResourceDrainManager : MonoBehaviour
         GameManager.Instance.Health = health;
         GameManager.Instance.FoodSupplies = food;
         GameManager.Instance.Durability = stamina;
+    }
+
+    private void SyncClimateToGameManager()
+    {
+        if (GameManager.Instance == null)
+            return;
+
+        switch (currentClimate)
+        {
+            case ClimateType.Tundra:
+                GameManager.Instance.CurrentClimate = GameManager.Climate.Tundra;
+                break;
+            case ClimateType.Col:
+                GameManager.Instance.CurrentClimate = GameManager.Climate.Col;
+                break;
+            case ClimateType.Iliman:
+            default:
+                GameManager.Instance.CurrentClimate = GameManager.Climate.Iliman;
+                break;
+        }
     }
 }

@@ -40,6 +40,9 @@ public class ClanClimateDetector : MonoBehaviour
 
         Debug.Log("İklim değişti: " + currentClimate);
 
+        if (GameManager.Instance != null)
+            GameManager.Instance.CurrentClimate = ConvertToGameManagerClimate(currentClimate);
+
         if (resourceDrainManager == null)
             resourceDrainManager = FindFirstObjectByType<ResourceDrainManager>();
 
@@ -50,5 +53,19 @@ public class ClanClimateDetector : MonoBehaviour
             new GameObject("ChallengeManager").AddComponent<ChallengeManager>();
 
         ChallengeManager.Instance.ScheduleChallenge(currentClimate, transform.position.x, 0f);
+    }
+
+    private GameManager.Climate ConvertToGameManagerClimate(ClimateType climateType)
+    {
+        switch (climateType)
+        {
+            case ClimateType.Tundra:
+                return GameManager.Climate.Tundra;
+            case ClimateType.Col:
+                return GameManager.Climate.Col;
+            case ClimateType.Iliman:
+            default:
+                return GameManager.Climate.Iliman;
+        }
     }
 }

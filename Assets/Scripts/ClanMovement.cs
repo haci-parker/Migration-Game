@@ -54,4 +54,13 @@ public class ClanMovement : MonoBehaviour
                 topHudController.ShowVictoryScreen();
         }
     }
+
+    public void ResetJourney()
+    {
+        Vector3 position = transform.position;
+        position.x = journeyStartX;
+        transform.position = position;
+        hasWon = false;
+        UpdateJourneyProgress();
+    }
 }
