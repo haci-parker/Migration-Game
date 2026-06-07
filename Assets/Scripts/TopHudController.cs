@@ -76,15 +76,10 @@ public class TopHudController : MonoBehaviour
     public float statWidth = 260f;
     public float statSpacing = 28f;
     public float iconSize = 34f;
-<<<<<<< Updated upstream
-    public float barHeight = 14f;
-    public float barTopOffset = -62f;
-=======
     public float iconLeftPadding = 18f;
     public float contentAfterIcon = 48f;
     public float barHeight = 8f;
     public float barTopOffset = -47f;
->>>>>>> Stashed changes
 
     [Header("Menu")]
     public Sprite menuIcon;
