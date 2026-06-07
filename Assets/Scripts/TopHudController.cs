@@ -61,11 +61,27 @@ public class TopHudController : MonoBehaviour
         public RectTransform FillRect;
     }
 
+    private class BottomMetricView
+    {
+        public TMP_Text ValueText;
+        public TMP_Text SubText;
+    }
+
     [Header("Icons")]
     public Sprite healthIcon;
     public Sprite foodIcon;
     public Sprite journeyIcon;
     public Sprite durabilityIcon;
+
+    [Header("Bottom HUD Sprites")]
+    public Sprite bottomPanelSprite;
+    public Sprite bottomMetricFrameSprite;
+    public Sprite bottomSpeedIcon;
+    public Sprite bottomPopulationIcon;
+    public Sprite bottomGoldIcon;
+    public Sprite bottomClimateIcon;
+    public Sprite bottomSunIcon;
+    public Sprite bottomContinueSprite;
 
     [Header("Layout")]
     public float topHeight = 150f;
@@ -81,6 +97,16 @@ public class TopHudController : MonoBehaviour
     public float contentAfterIcon = 48f;
     public float barHeight = 13f;
     public float barTopOffset = -58f;
+
+    [Header("Bottom HUD Layout")]
+    public float bottomHeight = 154f;
+    public float bottomPanelHeight = 124f;
+    public float bottomHorizontalPadding = 32f;
+    public float bottomContinueWidth = 190f;
+    public float bottomMetricIconSize = 82f;
+    public float bottomMetricLabelSize = 18f;
+    public float bottomMetricValueSize = 34f;
+    public float bottomMetricSubSize = 15f;
 
     [Header("Menu")]
     public Sprite menuIcon;
@@ -120,6 +146,9 @@ public class TopHudController : MonoBehaviour
     public Color menuButtonColor = new Color(0.025f, 0.023f, 0.021f, 0.74f);
     public Color menuButtonHoverColor = new Color(0.08f, 0.04f, 0.035f, 0.88f);
     public Color menuDisabledColor = new Color(0.55f, 0.55f, 0.55f, 0.48f);
+    public Color bottomPanelTopColor = new Color(0f, 0f, 0f, 0f);
+    public Color bottomPanelMiddleColor = new Color(0f, 0f, 0f, 0.72f);
+    public Color bottomPanelBottomColor = new Color(0f, 0f, 0f, 0.96f);
 
     [Header("Typography")]
     public TMP_FontAsset fontAsset;
@@ -130,7 +159,9 @@ public class TopHudController : MonoBehaviour
     public float characterSpacing = 0f;
 
     private readonly StatView[] _statViews = new StatView[4];
+    private readonly BottomMetricView[] _bottomMetricViews = new BottomMetricView[4];
     private RectTransform _root;
+    private RectTransform _bottomRoot;
     private TMP_Text _speedMetricValueText;
     private RectTransform _menuRoot;
     private RectTransform _menuFrameRoot;
@@ -142,10 +173,12 @@ public class TopHudController : MonoBehaviour
     private RenderTexture _mainMenuVideoTexture;
     private bool _gameStarted;
     private Sprite _panelGradientSprite;
+    private Sprite _bottomGradientSprite;
 
     private void Awake()
     {
         BuildHud();
+        BuildBottomHud();
         BuildMenu();
         ShowMenu(MenuMode.Main);
     }
@@ -242,6 +275,232 @@ public class TopHudController : MonoBehaviour
         _statViews[3] = CreateStat(statsParent, TopHudStat.Durability, "Direnç", durabilityIcon, 3f);
     }
 
+    private void BuildBottomHud()
+    {
+        Canvas canvas = GetComponentInParent<Canvas>();
+        if (canvas == null)
+            canvas = FindFirstObjectByType<Canvas>();
+
+        if (canvas == null)
+            return;
+
+        Transform oldRoot = canvas.transform.Find("BottomHudRoot");
+        if (oldRoot != null)
+            Destroy(oldRoot.gameObject);
+
+        GameObject rootObject = CreateUIObject("BottomHudRoot", canvas.transform);
+        _bottomRoot = rootObject.GetComponent<RectTransform>();
+        _bottomRoot.anchorMin = new Vector2(0f, 0f);
+        _bottomRoot.anchorMax = new Vector2(1f, 0f);
+        _bottomRoot.pivot = new Vector2(0.5f, 0f);
+        _bottomRoot.anchoredPosition = Vector2.zero;
+        _bottomRoot.sizeDelta = new Vector2(0f, bottomHeight);
+
+        Image gradient = rootObject.AddComponent<Image>();
+        gradient.sprite = CreateBottomGradientSprite();
+        gradient.color = Color.white;
+        gradient.raycastTarget = false;
+
+        RectTransform panel = CreateBottomPanel(_bottomRoot);
+        RectTransform metrics = CreateUIObject("Metrics", panel).GetComponent<RectTransform>();
+        metrics.anchorMin = new Vector2(0f, 0f);
+        metrics.anchorMax = new Vector2(1f, 1f);
+        metrics.offsetMin = new Vector2(18f, 0f);
+        metrics.offsetMax = new Vector2(-(bottomContinueWidth + 18f), 0f);
+
+        _bottomMetricViews[0] = CreateBottomMetric(metrics, 0f, "Hız", bottomSpeedIcon, "ORTA");
+        _bottomMetricViews[1] = CreateBottomMetric(metrics, 1f, "Nüfus", bottomPopulationIcon, "KAPASİTE");
+        _bottomMetricViews[2] = CreateBottomMetric(metrics, 2f, "Altın", bottomGoldIcon, "PARA BİRİMİ");
+        _bottomMetricViews[3] = CreateBottomMetric(metrics, 3f, "İklim", bottomClimateIcon, "ILIMAN");
+
+        CreateBottomSun(metrics);
+        CreateBottomContinue(panel);
+    }
+
+    private RectTransform CreateBottomPanel(RectTransform parent)
+    {
+        GameObject panelObject = CreateUIObject("BottomPanel", parent);
+        RectTransform panel = panelObject.GetComponent<RectTransform>();
+        panel.anchorMin = new Vector2(0f, 0f);
+        panel.anchorMax = new Vector2(1f, 0f);
+        panel.pivot = new Vector2(0.5f, 0f);
+        panel.anchoredPosition = new Vector2(0f, 12f);
+        panel.sizeDelta = new Vector2(-bottomHorizontalPadding * 2f, bottomPanelHeight);
+
+        Image image = panelObject.AddComponent<Image>();
+        image.sprite = bottomPanelSprite;
+        image.color = bottomPanelSprite != null ? Color.white : new Color(0.015f, 0.014f, 0.013f, 0.84f);
+        image.raycastTarget = false;
+        image.type = bottomPanelSprite != null ? Image.Type.Sliced : Image.Type.Simple;
+
+        CreateMenuBoxFrame(panel, menuFrameColor);
+        return panel;
+    }
+
+    private BottomMetricView CreateBottomMetric(RectTransform parent, float index, string label, Sprite icon, string subText)
+    {
+        GameObject metricObject = CreateUIObject(label + "BottomMetric", parent);
+        RectTransform metric = metricObject.GetComponent<RectTransform>();
+        float slotMin = index / 4.65f;
+        float slotMax = (index + 1f) / 4.65f;
+        metric.anchorMin = new Vector2(slotMin, 0f);
+        metric.anchorMax = new Vector2(slotMax, 1f);
+        metric.offsetMin = new Vector2(10f, 12f);
+        metric.offsetMax = new Vector2(-10f, -10f);
+
+        if (bottomMetricFrameSprite != null)
+        {
+            Image frame = metricObject.AddComponent<Image>();
+            frame.sprite = bottomMetricFrameSprite;
+            frame.color = Color.white;
+            frame.preserveAspect = true;
+            frame.raycastTarget = false;
+        }
+
+        Image iconImage = CreateImage("Icon", metric, iconColor);
+        RectTransform iconRect = iconImage.rectTransform;
+        iconRect.anchorMin = new Vector2(0f, 0.5f);
+        iconRect.anchorMax = new Vector2(0f, 0.5f);
+        iconRect.pivot = new Vector2(0.5f, 0.5f);
+        iconRect.anchoredPosition = new Vector2(bottomMetricIconSize * 0.5f, 0f);
+        iconRect.sizeDelta = new Vector2(bottomMetricIconSize, bottomMetricIconSize);
+        iconImage.sprite = icon;
+        iconImage.preserveAspect = true;
+        iconImage.enabled = icon != null;
+
+        if (icon == null)
+            CreateSimpleMetricGlyph(iconRect, label);
+
+        TMP_Text labelText = CreateText("Label", metric, label, bottomMetricLabelSize, labelColor, TextAlignmentOptions.Left, labelFontStyle);
+        RectTransform labelRect = labelText.rectTransform;
+        labelRect.anchorMin = new Vector2(0f, 1f);
+        labelRect.anchorMax = new Vector2(1f, 1f);
+        labelRect.pivot = new Vector2(0f, 1f);
+        labelRect.anchoredPosition = new Vector2(bottomMetricIconSize + 14f, -10f);
+        labelRect.sizeDelta = new Vector2(-(bottomMetricIconSize + 20f), 24f);
+
+        TMP_Text valueText = CreateText("Value", metric, "", bottomMetricValueSize, menuAccentColor, TextAlignmentOptions.Left, FontStyles.Normal);
+        RectTransform valueRect = valueText.rectTransform;
+        valueRect.anchorMin = new Vector2(0f, 0.5f);
+        valueRect.anchorMax = new Vector2(1f, 0.5f);
+        valueRect.pivot = new Vector2(0f, 0.5f);
+        valueRect.anchoredPosition = new Vector2(bottomMetricIconSize + 14f, -4f);
+        valueRect.sizeDelta = new Vector2(-(bottomMetricIconSize + 20f), 42f);
+
+        TMP_Text sub = CreateText("SubText", metric, subText, bottomMetricSubSize, menuDisabledColor, TextAlignmentOptions.Left, FontStyles.Normal);
+        RectTransform subRect = sub.rectTransform;
+        subRect.anchorMin = new Vector2(0f, 0f);
+        subRect.anchorMax = new Vector2(1f, 0f);
+        subRect.pivot = new Vector2(0f, 0f);
+        subRect.anchoredPosition = new Vector2(bottomMetricIconSize + 14f, 6f);
+        subRect.sizeDelta = new Vector2(-(bottomMetricIconSize + 20f), 22f);
+
+        if (index < 3f)
+            CreateSmallLine(metric);
+
+        return new BottomMetricView { ValueText = valueText, SubText = sub };
+    }
+
+    private void CreateBottomSun(RectTransform parent)
+    {
+        RectTransform sun = CreateUIObject("SunStatus", parent).GetComponent<RectTransform>();
+        sun.anchorMin = new Vector2(1f, 0.5f);
+        sun.anchorMax = new Vector2(1f, 0.5f);
+        sun.pivot = new Vector2(0.5f, 0.5f);
+        sun.anchoredPosition = new Vector2(-54f, 0f);
+        sun.sizeDelta = new Vector2(88f, 88f);
+
+        if (bottomSunIcon != null)
+        {
+            Image image = sun.gameObject.AddComponent<Image>();
+            image.sprite = bottomSunIcon;
+            image.color = Color.white;
+            image.preserveAspect = true;
+            image.raycastTarget = false;
+            return;
+        }
+
+        Image core = CreateImage("Core", sun, menuAccentColor);
+        core.rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
+        core.rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
+        core.rectTransform.sizeDelta = new Vector2(28f, 28f);
+
+        for (int i = 0; i < 12; i++)
+        {
+            Image ray = CreateImage("Ray" + i, sun, menuAccentColor);
+            RectTransform rayRect = ray.rectTransform;
+            rayRect.anchorMin = new Vector2(0.5f, 0.5f);
+            rayRect.anchorMax = new Vector2(0.5f, 0.5f);
+            rayRect.pivot = new Vector2(0.5f, 0.5f);
+            float angle = i * 30f;
+            Vector2 direction = new Vector2(Mathf.Cos(angle * Mathf.Deg2Rad), Mathf.Sin(angle * Mathf.Deg2Rad));
+            rayRect.anchoredPosition = direction * 32f;
+            rayRect.sizeDelta = new Vector2(3f, 14f);
+            rayRect.localEulerAngles = new Vector3(0f, 0f, angle);
+        }
+    }
+
+    private void CreateBottomContinue(RectTransform parent)
+    {
+        GameObject buttonObject = CreateUIObject("BottomContinue", parent);
+        RectTransform buttonRect = buttonObject.GetComponent<RectTransform>();
+        buttonRect.anchorMin = new Vector2(1f, 0.5f);
+        buttonRect.anchorMax = new Vector2(1f, 0.5f);
+        buttonRect.pivot = new Vector2(1f, 0.5f);
+        buttonRect.anchoredPosition = Vector2.zero;
+        buttonRect.sizeDelta = new Vector2(bottomContinueWidth, bottomPanelHeight);
+
+        Image background = buttonObject.AddComponent<Image>();
+        background.sprite = bottomContinueSprite;
+        background.color = bottomContinueSprite != null ? Color.white : new Color(0.01f, 0.009f, 0.008f, 0.9f);
+        background.raycastTarget = true;
+        background.type = bottomContinueSprite != null ? Image.Type.Sliced : Image.Type.Simple;
+
+        Button button = buttonObject.AddComponent<Button>();
+        button.targetGraphic = background;
+        button.onClick.AddListener(ResumeGame);
+
+        if (bottomContinueSprite == null)
+            CreateMenuBoxFrame(buttonRect, menuAccentColor);
+
+        TMP_Text label = CreateText("Label", buttonRect, "DEVAM", 22f, menuAccentColor, TextAlignmentOptions.Center, FontStyles.Normal);
+        RectTransform labelRect = label.rectTransform;
+        labelRect.anchorMin = Vector2.zero;
+        labelRect.anchorMax = Vector2.one;
+        labelRect.offsetMin = new Vector2(16f, 8f);
+        labelRect.offsetMax = new Vector2(-16f, -8f);
+    }
+
+    private void CreateSimpleMetricGlyph(RectTransform parent, string label)
+    {
+        Image ring = CreateImage("FallbackRing", parent, menuFrameColor);
+        RectTransform ringRect = ring.rectTransform;
+        ringRect.anchorMin = Vector2.zero;
+        ringRect.anchorMax = Vector2.one;
+        ringRect.offsetMin = Vector2.zero;
+        ringRect.offsetMax = Vector2.zero;
+        ring.type = Image.Type.Filled;
+        ring.fillMethod = Image.FillMethod.Radial360;
+        ring.fillAmount = 0.88f;
+
+        string glyph = "?";
+        if (label == "Hız")
+            glyph = ">";
+        else if (label == "Nüfus")
+            glyph = "P";
+        else if (label == "Altın")
+            glyph = "$";
+        else if (label == "İklim")
+            glyph = "C";
+
+        TMP_Text text = CreateText("FallbackGlyph", parent, glyph, 32f, iconColor, TextAlignmentOptions.Center, FontStyles.Bold);
+        RectTransform textRect = text.rectTransform;
+        textRect.anchorMin = Vector2.zero;
+        textRect.anchorMax = Vector2.one;
+        textRect.offsetMin = Vector2.zero;
+        textRect.offsetMax = Vector2.zero;
+    }
+
     private RectTransform CreateStatsParent(RectTransform parent)
     {
         GameObject statsObject = CreateUIObject("StatsArea", parent);
@@ -324,7 +583,7 @@ public class TopHudController : MonoBehaviour
         labelRect.anchoredPosition = new Vector2(0f, -10f);
         labelRect.sizeDelta = new Vector2(-20f, 26f);
 
-        _speedMetricValueText = CreateText("Value", metricRect, "100%", 32f, valueColor, TextAlignmentOptions.Center, FontStyles.Bold);
+        _speedMetricValueText = CreateText("Value", metricRect, Mathf.RoundToInt(GameManager.DefaultSpeedKmh) + " km/h", 28f, valueColor, TextAlignmentOptions.Center, FontStyles.Bold);
         RectTransform valueRect = _speedMetricValueText.rectTransform;
         valueRect.anchorMin = new Vector2(0f, 0f);
         valueRect.anchorMax = new Vector2(1f, 0f);
@@ -733,6 +992,9 @@ public class TopHudController : MonoBehaviour
         if (_root != null)
             _root.gameObject.SetActive(!isMainMenu);
 
+        if (_bottomRoot != null)
+            _bottomRoot.gameObject.SetActive(!isMainMenu);
+
         if (_continueButton != null)
             _continueButton.interactable = false;
 
@@ -768,6 +1030,9 @@ public class TopHudController : MonoBehaviour
 
         if (_root != null)
             _root.gameObject.SetActive(true);
+
+        if (_bottomRoot != null)
+            _bottomRoot.gameObject.SetActive(true);
 
         Time.timeScale = 1f;
     }
@@ -862,7 +1127,9 @@ public class TopHudController : MonoBehaviour
             return;
 
         if (_speedMetricValueText != null)
-            _speedMetricValueText.text = Mathf.RoundToInt(gameManager.Speed) + "%";
+            _speedMetricValueText.text = Mathf.RoundToInt(gameManager.Speed) + " km/h";
+
+        UpdateBottomHud(gameManager);
 
         for (int i = 0; i < _statViews.Length; i++)
         {
@@ -883,6 +1150,56 @@ public class TopHudController : MonoBehaviour
                 view.FillRect.offsetMax = Vector2.zero;
             }
         }
+    }
+
+    private void UpdateBottomHud(GameManager gameManager)
+    {
+        SetBottomMetric(0, FormatSpeed(gameManager.Speed), GetSpeedLabel(gameManager.Speed));
+        SetBottomMetric(1, gameManager.Population + " / 20", "KAPASITE");
+        SetBottomMetric(2, gameManager.Gold.ToString(), "PARA BIRIMI");
+        SetBottomMetric(3, GetClimateTemperature(gameManager.CurrentClimate), GetClimateLabel(gameManager.CurrentClimate));
+    }
+
+    private void SetBottomMetric(int index, string value, string subText)
+    {
+        if (index < 0 || index >= _bottomMetricViews.Length)
+            return;
+
+        BottomMetricView view = _bottomMetricViews[index];
+        if (view == null)
+            return;
+
+        if (view.ValueText != null)
+            view.ValueText.text = value;
+
+        if (view.SubText != null)
+            view.SubText.text = subText;
+    }
+
+    private string FormatSpeed(float speed)
+    {
+        return (speed / 10f).ToString("0.0");
+    }
+
+    private string GetSpeedLabel(float speed)
+    {
+        if (speed < GameManager.DefaultSpeedKmh * 0.75f)
+            return "YAVAS";
+
+        if (speed > GameManager.DefaultSpeedKmh * 1.25f)
+            return "HIZLI";
+
+        return "ORTA";
+    }
+
+    private string GetClimateTemperature(GameManager.Climate climate)
+    {
+        return climate == GameManager.Climate.Iliman ? "22C" : "43C";
+    }
+
+    private string GetClimateLabel(GameManager.Climate climate)
+    {
+        return climate == GameManager.Climate.Iliman ? "ILIMAN" : "ASIRI SICAK";
     }
 
     private float GetValue(GameManager gameManager, TopHudStat stat)
@@ -911,6 +1228,35 @@ public class TopHudController : MonoBehaviour
         lineRect.pivot = new Vector2(0.5f, 0f);
         lineRect.anchoredPosition = Vector2.zero;
         lineRect.sizeDelta = new Vector2(0f, 1f);
+    }
+
+    private Sprite CreateBottomGradientSprite()
+    {
+        if (_bottomGradientSprite != null)
+            return _bottomGradientSprite;
+
+        const int width = 2;
+        const int height = 256;
+        Texture2D texture = new Texture2D(width, height, TextureFormat.RGBA32, false);
+        texture.wrapMode = TextureWrapMode.Clamp;
+        texture.filterMode = FilterMode.Bilinear;
+
+        for (int y = 0; y < height; y++)
+        {
+            float t = y / (height - 1f);
+            Color color;
+            if (t < 0.42f)
+                color = Color.Lerp(bottomPanelBottomColor, bottomPanelMiddleColor, Mathf.SmoothStep(0f, 1f, t / 0.42f));
+            else
+                color = Color.Lerp(bottomPanelMiddleColor, bottomPanelTopColor, Mathf.SmoothStep(0f, 1f, (t - 0.42f) / 0.58f));
+
+            for (int x = 0; x < width; x++)
+                texture.SetPixel(x, y, color);
+        }
+
+        texture.Apply();
+        _bottomGradientSprite = Sprite.Create(texture, new Rect(0f, 0f, width, height), new Vector2(0.5f, 0.5f));
+        return _bottomGradientSprite;
     }
 
     private Sprite CreatePanelGradientSprite()

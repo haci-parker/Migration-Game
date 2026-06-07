@@ -302,7 +302,7 @@ public class ChallengeManager : MonoBehaviour
 
     private string FormatEffects(ChallengeOption option)
     {
-        return FormatDelta(option.SpeedDelta) + " HIZ\n" + FormatDelta(option.HealthDelta) + " SGL\n" + FormatDelta(option.FoodDelta) + " ERZ";
+        return FormatDelta(option.SpeedDelta) + " km/h HIZ\n" + FormatDelta(option.HealthDelta) + " SGL\n" + FormatDelta(option.FoodDelta) + " ERZ";
     }
 
     private string FormatDelta(int value)

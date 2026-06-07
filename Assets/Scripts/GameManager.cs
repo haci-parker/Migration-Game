@@ -8,6 +8,8 @@ using TMPro;
 /// </summary>
 public class GameManager : MonoBehaviour
 {
+    public const float DefaultSpeedKmh = 40f;
+
     // ──────────────────────────────────────────────
     //  Singleton – lets any script access GameManager.Instance
     // ──────────────────────────────────────────────
@@ -67,7 +69,7 @@ public class GameManager : MonoBehaviour
     private float _journeyProgress  = 0f;
     private int   _gold             = 0;
     private int   _population       = 10;
-    private float _speed            = 100f;
+    private float _speed            = DefaultSpeedKmh;
     private Climate _climate        = Climate.Iliman;
 
     // ──────────────────────────────────────────────
@@ -144,13 +146,13 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    /// <summary>Travel speed multiplier.</summary>
+    /// <summary>Travel speed in km/h.</summary>
     public float Speed
     {
         get => _speed;
         set
         {
-            _speed = Mathf.Clamp(value, 0f, 100f);
+            _speed = Mathf.Max(value, 0f);
             UpdateSpeedUI();
         }
     }
@@ -233,7 +235,7 @@ public class GameManager : MonoBehaviour
     private void UpdateSpeedUI()
     {
         if (speedText != null)
-            speedText.text = "Hız: " + Mathf.RoundToInt(_speed) + "%";
+            speedText.text = "Hız: " + Mathf.RoundToInt(_speed) + " km/h";
     }
 
     private void UpdateClimateUI()

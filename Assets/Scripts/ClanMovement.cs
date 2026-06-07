@@ -23,7 +23,7 @@ public class ClanMovement : MonoBehaviour
 
         float speedMultiplier = 1f;
         if (GameManager.Instance != null)
-            speedMultiplier = Mathf.Clamp(GameManager.Instance.Speed / 100f, 0f, 2f);
+            speedMultiplier = Mathf.Max(GameManager.Instance.Speed / GameManager.DefaultSpeedKmh, 0f);
 
         Vector3 movement = Vector3.right * clanSpeed * speedMultiplier * Time.deltaTime;
         transform.position += movement;
