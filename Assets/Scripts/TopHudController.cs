@@ -131,6 +131,7 @@ public class TopHudController : MonoBehaviour
 
     private readonly StatView[] _statViews = new StatView[4];
     private RectTransform _root;
+    private TMP_Text _speedMetricValueText;
     private RectTransform _menuRoot;
     private RectTransform _menuFrameRoot;
     private Button _continueButton;
@@ -233,6 +234,7 @@ public class TopHudController : MonoBehaviour
         RectTransform statsParent = CreateStatsParent(_root);
         CreateBottomLine(statsParent);
         CreateMenuButton(_root);
+        CreateSpeedMetric(_root);
 
         _statViews[0] = CreateStat(statsParent, TopHudStat.Health, "Sağlık", healthIcon, 0f);
         _statViews[1] = CreateStat(statsParent, TopHudStat.FoodSupplies, "Erzak", foodIcon, 1f);
@@ -296,6 +298,39 @@ public class TopHudController : MonoBehaviour
             CreateMenuStripe(menuRect, 0f);
             CreateMenuStripe(menuRect, -7f);
         }
+    }
+
+    private void CreateSpeedMetric(RectTransform parent)
+    {
+        GameObject metricObject = CreateUIObject("SpeedMetric", parent);
+        RectTransform metricRect = metricObject.GetComponent<RectTransform>();
+        metricRect.anchorMin = new Vector2(1f, 0.5f);
+        metricRect.anchorMax = new Vector2(1f, 0.5f);
+        metricRect.pivot = new Vector2(1f, 0.5f);
+        metricRect.anchoredPosition = new Vector2(-34f, 0f);
+        metricRect.sizeDelta = new Vector2(154f, 86f);
+
+        Image background = metricObject.AddComponent<Image>();
+        background.color = new Color(0.02f, 0.018f, 0.016f, 0.76f);
+        background.raycastTarget = false;
+
+        CreateMenuBoxFrame(metricRect, menuFrameColor);
+
+        TMP_Text labelText = CreateText("Label", metricRect, "Hız", 20f, labelColor, TextAlignmentOptions.Center, labelFontStyle);
+        RectTransform labelRect = labelText.rectTransform;
+        labelRect.anchorMin = new Vector2(0f, 1f);
+        labelRect.anchorMax = new Vector2(1f, 1f);
+        labelRect.pivot = new Vector2(0.5f, 1f);
+        labelRect.anchoredPosition = new Vector2(0f, -10f);
+        labelRect.sizeDelta = new Vector2(-20f, 26f);
+
+        _speedMetricValueText = CreateText("Value", metricRect, "100%", 32f, valueColor, TextAlignmentOptions.Center, FontStyles.Bold);
+        RectTransform valueRect = _speedMetricValueText.rectTransform;
+        valueRect.anchorMin = new Vector2(0f, 0f);
+        valueRect.anchorMax = new Vector2(1f, 0f);
+        valueRect.pivot = new Vector2(0.5f, 0f);
+        valueRect.anchoredPosition = new Vector2(0f, 12f);
+        valueRect.sizeDelta = new Vector2(-20f, 40f);
     }
 
     private void BuildMenu()
@@ -825,6 +860,9 @@ public class TopHudController : MonoBehaviour
         GameManager gameManager = GameManager.Instance;
         if (gameManager == null)
             return;
+
+        if (_speedMetricValueText != null)
+            _speedMetricValueText.text = Mathf.RoundToInt(gameManager.Speed) + "%";
 
         for (int i = 0; i < _statViews.Length; i++)
         {
