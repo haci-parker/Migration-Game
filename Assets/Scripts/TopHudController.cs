@@ -33,12 +33,22 @@ public class TopHudController : MonoBehaviour
     public float topHeight = 150f;
     public float gradientHeight = 220f;
     public float statsAreaHeight = 86f;
+    [Range(0.3f, 1f)]
+    public float statsWidthRatio = 0.6f;
     public float horizontalPadding = 42f;
     public float statWidth = 260f;
     public float statSpacing = 28f;
     public float iconSize = 34f;
     public float barHeight = 8f;
     public float barTopOffset = -47f;
+
+    [Header("Menu")]
+    public Sprite menuIcon;
+    public float menuRightPadding = 34f;
+    public Vector2 menuButtonSize = new Vector2(46f, 38f);
+    public Vector2 menuIconSize = new Vector2(24f, 18f);
+    public Color menuFrameColor = new Color(1f, 1f, 1f, 0.16f);
+    public Color menuStripeColor = new Color(0.74f, 0.74f, 0.74f, 0.9f);
 
     [Header("Style")]
     public Color panelTopColor = new Color(0f, 0f, 0f, 0.99f);
@@ -51,6 +61,14 @@ public class TopHudController : MonoBehaviour
     public Color barBackColor = new Color(0.05f, 0.05f, 0.05f, 0.95f);
     public Color barFillColor = new Color(0.72f, 0.12f, 0.12f, 1f);
     public Color barOutlineColor = new Color(0.72f, 0.72f, 0.72f, 0.16f);
+
+    [Header("Typography")]
+    public TMP_FontAsset fontAsset;
+    public float labelFontSize = 18f;
+    public float valueFontSize = 17f;
+    public FontStyles labelFontStyle = FontStyles.Normal;
+    public FontStyles valueFontStyle = FontStyles.Normal;
+    public float characterSpacing = 0f;
 
     private readonly StatView[] _statViews = new StatView[4];
     private RectTransform _root;
@@ -98,6 +116,7 @@ public class TopHudController : MonoBehaviour
 
         RectTransform statsParent = CreateStatsParent(_root);
         CreateBottomLine(statsParent);
+        CreateMenuButton(_root);
 
         _statViews[0] = CreateStat(statsParent, TopHudStat.Health, "Sağlık", healthIcon, 0f);
         _statViews[1] = CreateStat(statsParent, TopHudStat.FoodSupplies, "Erzak", foodIcon, 1f);
@@ -110,11 +129,43 @@ public class TopHudController : MonoBehaviour
         GameObject statsObject = CreateUIObject("StatsArea", parent);
         RectTransform statsRect = statsObject.GetComponent<RectTransform>();
         statsRect.anchorMin = new Vector2(0f, 1f);
-        statsRect.anchorMax = new Vector2(1f, 1f);
-        statsRect.pivot = new Vector2(0.5f, 1f);
+        statsRect.anchorMax = new Vector2(statsWidthRatio, 1f);
+        statsRect.pivot = new Vector2(0f, 1f);
         statsRect.anchoredPosition = Vector2.zero;
         statsRect.sizeDelta = new Vector2(0f, statsAreaHeight);
         return statsRect;
+    }
+
+    private void CreateMenuButton(RectTransform parent)
+    {
+        GameObject menuObject = CreateUIObject("SettingsMenu", parent);
+        RectTransform menuRect = menuObject.GetComponent<RectTransform>();
+        menuRect.anchorMin = new Vector2(1f, 1f);
+        menuRect.anchorMax = new Vector2(1f, 1f);
+        menuRect.pivot = new Vector2(1f, 1f);
+        menuRect.anchoredPosition = new Vector2(-menuRightPadding, -17f);
+        menuRect.sizeDelta = menuButtonSize;
+
+        CreateMenuFrame(menuRect);
+
+        if (menuIcon != null)
+        {
+            Image iconImage = CreateImage("MenuIcon", menuRect, menuStripeColor);
+            RectTransform iconRect = iconImage.rectTransform;
+            iconRect.anchorMin = new Vector2(0.5f, 0.5f);
+            iconRect.anchorMax = new Vector2(0.5f, 0.5f);
+            iconRect.pivot = new Vector2(0.5f, 0.5f);
+            iconRect.anchoredPosition = Vector2.zero;
+            iconRect.sizeDelta = menuIconSize;
+            iconImage.sprite = menuIcon;
+            iconImage.preserveAspect = true;
+        }
+        else
+        {
+            CreateMenuStripe(menuRect, 7f);
+            CreateMenuStripe(menuRect, 0f);
+            CreateMenuStripe(menuRect, -7f);
+        }
     }
 
     private StatView CreateStat(RectTransform parent, TopHudStat stat, string label, Sprite icon, float index)
@@ -143,7 +194,7 @@ public class TopHudController : MonoBehaviour
         iconImage.preserveAspect = true;
         iconImage.enabled = icon != null;
 
-        TMP_Text labelText = CreateText("Label", statRect, label, 18f, labelColor, TextAlignmentOptions.Left);
+        TMP_Text labelText = CreateText("Label", statRect, label, labelFontSize, labelColor, TextAlignmentOptions.Left, labelFontStyle);
         RectTransform labelRect = labelText.rectTransform;
         labelRect.anchorMin = new Vector2(0f, 1f);
         labelRect.anchorMax = new Vector2(0f, 1f);
@@ -154,7 +205,7 @@ public class TopHudController : MonoBehaviour
         labelRect.anchoredPosition = new Vector2(contentLeft, -20f);
         labelRect.sizeDelta = new Vector2(110f, 26f);
 
-        TMP_Text valueText = CreateText("Value", statRect, "", 17f, valueColor, TextAlignmentOptions.Right);
+        TMP_Text valueText = CreateText("Value", statRect, "", valueFontSize, valueColor, TextAlignmentOptions.Right, valueFontStyle);
         RectTransform valueRect = valueText.rectTransform;
         valueRect.anchorMin = new Vector2(1f, 1f);
         valueRect.anchorMax = new Vector2(1f, 1f);
@@ -305,6 +356,36 @@ public class TopHudController : MonoBehaviour
         lineRect.sizeDelta = new Vector2(1f, 0f);
     }
 
+    private void CreateMenuFrame(RectTransform parent)
+    {
+        CreateMenuFrameLine("MenuFrameTop", parent, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, 1f));
+        CreateMenuFrameLine("MenuFrameBottom", parent, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0f), new Vector2(0f, 1f));
+        CreateMenuFrameLine("MenuFrameLeft", parent, new Vector2(0f, 0f), new Vector2(0f, 1f), new Vector2(0f, 0.5f), new Vector2(1f, 0f));
+        CreateMenuFrameLine("MenuFrameRight", parent, new Vector2(1f, 0f), new Vector2(1f, 1f), new Vector2(1f, 0.5f), new Vector2(1f, 0f));
+    }
+
+    private void CreateMenuFrameLine(string objectName, RectTransform parent, Vector2 anchorMin, Vector2 anchorMax, Vector2 pivot, Vector2 sizeDelta)
+    {
+        Image line = CreateImage(objectName, parent, menuFrameColor);
+        RectTransform lineRect = line.rectTransform;
+        lineRect.anchorMin = anchorMin;
+        lineRect.anchorMax = anchorMax;
+        lineRect.pivot = pivot;
+        lineRect.anchoredPosition = Vector2.zero;
+        lineRect.sizeDelta = sizeDelta;
+    }
+
+    private void CreateMenuStripe(RectTransform parent, float y)
+    {
+        Image stripe = CreateImage("MenuStripe", parent, menuStripeColor);
+        RectTransform stripeRect = stripe.rectTransform;
+        stripeRect.anchorMin = new Vector2(0.5f, 0.5f);
+        stripeRect.anchorMax = new Vector2(0.5f, 0.5f);
+        stripeRect.pivot = new Vector2(0.5f, 0.5f);
+        stripeRect.anchoredPosition = new Vector2(0f, y);
+        stripeRect.sizeDelta = new Vector2(menuIconSize.x, 2f);
+    }
+
     private void CreateBarOutline(RectTransform parent)
     {
         CreateBarLine("OutlineTop", parent, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, 1f));
@@ -340,14 +421,17 @@ public class TopHudController : MonoBehaviour
         return image;
     }
 
-    private TMP_Text CreateText(string objectName, Transform parent, string text, float fontSize, Color color, TextAlignmentOptions alignment)
+    private TMP_Text CreateText(string objectName, Transform parent, string text, float fontSize, Color color, TextAlignmentOptions alignment, FontStyles fontStyle)
     {
         GameObject textObject = CreateUIObject(objectName, parent);
         TextMeshProUGUI tmpText = textObject.AddComponent<TextMeshProUGUI>();
         tmpText.text = text;
+        tmpText.font = fontAsset;
         tmpText.fontSize = fontSize;
+        tmpText.fontStyle = fontStyle;
         tmpText.color = color;
         tmpText.alignment = alignment;
+        tmpText.characterSpacing = characterSpacing;
         tmpText.raycastTarget = false;
         tmpText.textWrappingMode = TextWrappingModes.NoWrap;
         return tmpText;
