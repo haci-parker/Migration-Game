@@ -1,0 +1,8 @@
+﻿<Solution>
+  <Project Path="Xxxberk4y71.Brown.Tests.csproj" />
+  <Project Path="Assembly-CSharp-Editor.csproj" />
+  <Project Path="Assembly-CSharp.csproj" />
+  <Project Path="Xxxberk4y71.Brown.csproj" />
+  <Project Path="Xxxberk4y71.Brown.Editor.Tests.csproj" />
+  <Project Path="Xxxberk4y71.Brown.Editor.csproj" />
+</Solution>
