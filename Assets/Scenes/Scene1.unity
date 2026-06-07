@@ -1187,9 +1187,9 @@ MonoBehaviour:
   menuButtonColor: {r: 0.12, g: 0.105, b: 0.085, a: 0.96}
   menuButtonHoverColor: {r: 0.18, g: 0.15, b: 0.11, a: 1}
   menuDisabledColor: {r: 0.55, g: 0.55, b: 0.55, a: 0.48}
-  fontAsset: {fileID: 11400000, guid: f91f8981749fd714f9128f3c3cd9751a, type: 2}
-  labelFontSize: 26
-  valueFontSize: 25
+  fontAsset: {fileID: 11400000, guid: 40ae7c8891c978649a2f39b495291297, type: 2}
+  labelFontSize: 15
+  valueFontSize: 15
   labelFontStyle: 0
   valueFontStyle: 0
   characterSpacing: 0
