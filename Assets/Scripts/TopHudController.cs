@@ -75,11 +75,11 @@ public class TopHudController : MonoBehaviour
     public float horizontalPadding = 42f;
     public float statWidth = 260f;
     public float statSpacing = 28f;
-    public float iconSize = 34f;
+    public float iconSize = 46f;
     public float iconLeftPadding = 18f;
     public float contentAfterIcon = 48f;
-    public float barHeight = 8f;
-    public float barTopOffset = -47f;
+    public float barHeight = 13f;
+    public float barTopOffset = -58f;
 
     [Header("Menu")]
     public Sprite menuIcon;
@@ -109,8 +109,8 @@ public class TopHudController : MonoBehaviour
     public Color panelBottomColor = new Color(0f, 0f, 0f, 0f);
     public Color lineColor = new Color(1f, 1f, 1f, 0.16f);
     public Color iconColor = new Color(0.72f, 0.72f, 0.72f, 1f);
-    public Color labelColor = new Color(0.78f, 0.74f, 0.68f, 1f);
-    public Color valueColor = new Color(0.84f, 0.82f, 0.78f, 1f);
+    public Color labelColor = new Color(0.92f, 0.9f, 0.86f, 1f);
+    public Color valueColor = new Color(0.96f, 0.95f, 0.9f, 1f);
     public Color barBackColor = new Color(0.05f, 0.05f, 0.05f, 0.95f);
     public Color barFillColor = new Color(0.72f, 0.12f, 0.12f, 1f);
     public Color barOutlineColor = new Color(0.72f, 0.72f, 0.72f, 0.16f);
@@ -122,8 +122,8 @@ public class TopHudController : MonoBehaviour
 
     [Header("Typography")]
     public TMP_FontAsset fontAsset;
-    public float labelFontSize = 22f;
-    public float valueFontSize = 21f;
+    public float labelFontSize = 26f;
+    public float valueFontSize = 25f;
     public FontStyles labelFontStyle = FontStyles.Normal;
     public FontStyles valueFontStyle = FontStyles.Normal;
     public float characterSpacing = 0f;
@@ -776,16 +776,19 @@ public class TopHudController : MonoBehaviour
         float contentLeft = contentAfterIcon;
         float contentRight = horizontalPadding * 0.7f;
 
-        labelRect.anchoredPosition = new Vector2(contentLeft, -28f);
-        labelRect.sizeDelta = new Vector2(126f, 34f);
+        const float textTopOffset = -18f;
+        const float textHeight = 34f;
+
+        labelRect.anchoredPosition = new Vector2(contentLeft, textTopOffset);
+        labelRect.sizeDelta = new Vector2(156f, textHeight);
 
         TMP_Text valueText = CreateText("Value", statRect, "", valueFontSize, valueColor, TextAlignmentOptions.Right, valueFontStyle);
         RectTransform valueRect = valueText.rectTransform;
         valueRect.anchorMin = new Vector2(1f, 1f);
         valueRect.anchorMax = new Vector2(1f, 1f);
         valueRect.pivot = new Vector2(1f, 1f);
-        valueRect.anchoredPosition = new Vector2(-contentRight, -28f);
-        valueRect.sizeDelta = new Vector2(118f, 34f);
+        valueRect.anchoredPosition = new Vector2(-contentRight, textTopOffset);
+        valueRect.sizeDelta = new Vector2(166f, textHeight);
 
         Image barBack = CreateImage("BarBack", statRect, barBackColor);
         RectTransform barBackRect = barBack.rectTransform;
