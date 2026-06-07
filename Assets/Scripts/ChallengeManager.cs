@@ -79,9 +79,7 @@ public class ChallengeManager : MonoBehaviour
     public static ChallengeManager Instance { get; private set; }
 
     [Header("Trigger")]
-    [Range(0f, 1f)] public float minSegmentPercent = 0.3f;
-    [Range(0f, 1f)] public float maxSegmentPercent = 0.9f;
-    public float fallbackSegmentDistance = 300f;
+    public float challengeStepProgress = 5f;
 
     [Header("Card Layout")]
     public Vector2 cardSize = new Vector2(310f, 430f);
@@ -101,9 +99,8 @@ public class ChallengeManager : MonoBehaviour
     private TMP_Text _titleText;
     private TMP_Text _descriptionText;
     private ClimateType _activeClimate;
-    private float _triggerX;
-    private bool _hasSchedule;
-    private bool _hasShownCurrentClimateChallenge;
+    private float _nextChallengeProgress;
+    private bool _hasActiveClimate;
     private bool _isShowing;
 
     private void Awake()
@@ -121,23 +118,22 @@ public class ChallengeManager : MonoBehaviour
 
     private void Update()
     {
-        if (!_hasSchedule || _hasShownCurrentClimateChallenge || _isShowing)
+        if (!_hasActiveClimate || _isShowing)
             return;
 
-        Transform player = FindPlayerTransform();
-        if (player == null)
+        GameManager gameManager = GameManager.Instance;
+        if (gameManager == null)
             return;
 
-        if (player.position.x >= _triggerX)
+        if (gameManager.JourneyProgress >= _nextChallengeProgress)
             ShowRandomChallenge(_activeClimate);
     }
 
     public void ScheduleChallenge(ClimateType climate, float climateStartX, float segmentDistance)
     {
         _activeClimate = climate;
-        _triggerX = climateStartX + Mathf.Max(segmentDistance, 1f) * Random.Range(minSegmentPercent, maxSegmentPercent);
-        _hasSchedule = true;
-        _hasShownCurrentClimateChallenge = false;
+        _nextChallengeProgress = GetNextProgressMilestone();
+        _hasActiveClimate = true;
     }
 
     private void ShowRandomChallenge(ClimateType climate)
@@ -160,7 +156,6 @@ public class ChallengeManager : MonoBehaviour
 
         ClearCards();
 
-        _hasShownCurrentClimateChallenge = true;
         _isShowing = true;
         _root.gameObject.SetActive(true);
 
@@ -191,7 +186,16 @@ public class ChallengeManager : MonoBehaviour
         if (resourceDrainManager != null)
             resourceDrainManager.ApplyChallengeEffects(option.HealthDelta, option.FoodDelta);
 
+        _nextChallengeProgress = GetNextProgressMilestone();
+
         HideChallenge(true);
+    }
+
+    private float GetNextProgressMilestone()
+    {
+        float step = Mathf.Max(challengeStepProgress, 1f);
+        float progress = GameManager.Instance != null ? GameManager.Instance.JourneyProgress : 0f;
+        return Mathf.Floor(progress / step) * step + step;
     }
 
     private void HideChallenge(bool resumeTime)
@@ -340,12 +344,6 @@ public class ChallengeManager : MonoBehaviour
         }
 
         return result;
-    }
-
-    private Transform FindPlayerTransform()
-    {
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
-        return player != null ? player.transform : null;
     }
 
     private void ClearCards()
