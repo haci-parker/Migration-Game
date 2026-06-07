@@ -1256,24 +1256,29 @@ MonoBehaviour:
   horizontalPadding: 42
   statWidth: 260
   statSpacing: 28
-<<<<<<< Updated upstream
-  iconSize: 34
-  barHeight: 14
-  barTopOffset: -62
-  menuIcon: {fileID: 0}
-=======
   iconSize: 52.4
   iconLeftPadding: -15
   contentAfterIcon: 48
   barHeight: 8
   barTopOffset: -47
   menuIcon: {fileID: 21300000, guid: 5d5993ece0a962843810cb79df904c68, type: 3}
->>>>>>> Stashed changes
   menuRightPadding: 34
   menuButtonSize: {x: 46, y: 38}
   menuIconSize: {x: 24, y: 18}
   menuFrameColor: {r: 1, g: 1, b: 1, a: 0.16}
   menuStripeColor: {r: 0.74, g: 0.74, b: 0.74, a: 0.9}
+  mainMenuVideo: {fileID: 32900000, guid: f0b850d222478494b8e305bf53860850, type: 3}
+  mainMenuVideoVolume: 0.5
+  mainMenuMusic: {fileID: 8300000, guid: d42c49ab410bc974e8240c2c38b3c71c, type: 3}
+  mainMenuMusicVolume: 0.351
+  newGameButtonSprite: {fileID: 21300000, guid: d584ab6336d64b746a5e2556d0db6095, type: 3}
+  continueButtonSprite: {fileID: 21300000, guid: c09b5c796dd7314499aa54e0efb4e611, type: 3}
+  settingsButtonSprite: {fileID: 21300000, guid: 650d5a6350c2c834cbf5c45ca249912e, type: 3}
+  quitButtonSprite: {fileID: 21300000, guid: 09eda5d2721e4d040836220ea9f21c59, type: 3}
+  mainMenuButtonImageSize: {x: 386, y: 58}
+  mainMenuButtonStart: {x: 72, y: -280}
+  mainMenuButtonSpacing: 70
+  saturationShader: {fileID: 0}
   panelTopColor: {r: 0, g: 0, b: 0, a: 0.99}
   panelMiddleColor: {r: 0, g: 0, b: 0, a: 0.78}
   panelBottomColor: {r: 0, g: 0, b: 0, a: 0}
@@ -1284,9 +1289,14 @@ MonoBehaviour:
   barBackColor: {r: 0.05, g: 0.05, b: 0.05, a: 0.95}
   barFillColor: {r: 0.72, g: 0.12, b: 0.12, a: 1}
   barOutlineColor: {r: 0.72, g: 0.72, b: 0.72, a: 0.16}
-  fontAsset: {fileID: 11400000, guid: e3c6af34b8bd4ff49b2295c6c8e5f061, type: 2}
-  labelFontSize: 22
-  valueFontSize: 21
+  menuOverlayColor: {r: 0.02, g: 0.018, b: 0.014, a: 0.94}
+  menuAccentColor: {r: 0.72, g: 0.12, b: 0.12, a: 1}
+  menuButtonColor: {r: 0.12, g: 0.105, b: 0.085, a: 0.96}
+  menuButtonHoverColor: {r: 0.18, g: 0.15, b: 0.11, a: 1}
+  menuDisabledColor: {r: 0.55, g: 0.55, b: 0.55, a: 0.48}
+  fontAsset: {fileID: 11400000, guid: f91f8981749fd714f9128f3c3cd9751a, type: 2}
+  labelFontSize: 18
+  valueFontSize: 17
   labelFontStyle: 0
   valueFontStyle: 0
   characterSpacing: 0
@@ -1506,75 +1516,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1104116241}
   m_CullTransparentMesh: 1
---- !u!1001 &1184197138
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 1043327204712711598, guid: 1ccb95b6f2bc343bdbdaef34b7cf7ab1, type: 3}
-      propertyPath: m_Sprite
-      value:
-      objectReference: {fileID: 21300000, guid: f1d754fec293c42dda87144fa5aacf5b, type: 3}
-    - target: {fileID: 1545993418379933496, guid: 1ccb95b6f2bc343bdbdaef34b7cf7ab1, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 870
-      objectReference: {fileID: 0}
-    - target: {fileID: 1545993418379933496, guid: 1ccb95b6f2bc343bdbdaef34b7cf7ab1, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1545993418379933496, guid: 1ccb95b6f2bc343bdbdaef34b7cf7ab1, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -10.05653
-      objectReference: {fileID: 0}
-    - target: {fileID: 1545993418379933496, guid: 1ccb95b6f2bc343bdbdaef34b7cf7ab1, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1545993418379933496, guid: 1ccb95b6f2bc343bdbdaef34b7cf7ab1, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1545993418379933496, guid: 1ccb95b6f2bc343bdbdaef34b7cf7ab1, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1545993418379933496, guid: 1ccb95b6f2bc343bdbdaef34b7cf7ab1, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1545993418379933496, guid: 1ccb95b6f2bc343bdbdaef34b7cf7ab1, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1545993418379933496, guid: 1ccb95b6f2bc343bdbdaef34b7cf7ab1, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1545993418379933496, guid: 1ccb95b6f2bc343bdbdaef34b7cf7ab1, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2345601402288487517, guid: 1ccb95b6f2bc343bdbdaef34b7cf7ab1, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value:
-      objectReference: {fileID: 2100000, guid: c29d8d5154a1149628dc52daab444eb2, type: 2}
-    - target: {fileID: 2708219930315220941, guid: 1ccb95b6f2bc343bdbdaef34b7cf7ab1, type: 3}
-      propertyPath: m_Sprite
-      value:
-      objectReference: {fileID: 21300000, guid: 92b83c8f289df486fb7549e9c7bd61e9, type: 3}
-    - target: {fileID: 3216727060524497697, guid: 1ccb95b6f2bc343bdbdaef34b7cf7ab1, type: 3}
-      propertyPath: m_Name
-      value: tundra_objects (1)
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 1ccb95b6f2bc343bdbdaef34b7cf7ab1, type: 3}
 --- !u!1 &1638695363
 GameObject:
   m_ObjectHideFlags: 0
