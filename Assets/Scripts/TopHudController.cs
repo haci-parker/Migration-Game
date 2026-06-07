@@ -160,11 +160,15 @@ public class TopHudController : MonoBehaviour
 
     private readonly StatView[] _statViews = new StatView[4];
     private readonly BottomMetricView[] _bottomMetricViews = new BottomMetricView[4];
+    private readonly float[] _gameplayTimeScales = { 1f, 2f, 5f };
     private RectTransform _root;
     private RectTransform _bottomRoot;
     private TMP_Text _speedMetricValueText;
+    private TMP_Text _gameplaySpeedButtonText;
     private RectTransform _menuRoot;
     private RectTransform _menuFrameRoot;
+    private RectTransform _victoryRoot;
+    private RectTransform _defeatRoot;
     private Button _continueButton;
     private Button _startButton;
     private VideoPlayer _mainMenuVideoPlayer;
@@ -172,6 +176,8 @@ public class TopHudController : MonoBehaviour
     private AudioSource _mainMenuMusicSource;
     private RenderTexture _mainMenuVideoTexture;
     private bool _gameStarted;
+    private bool _gameEnded;
+    private int _gameplayTimeScaleIndex;
     private Sprite _panelGradientSprite;
     private Sprite _bottomGradientSprite;
 
@@ -180,6 +186,8 @@ public class TopHudController : MonoBehaviour
         BuildHud();
         BuildBottomHud();
         BuildMenu();
+        BuildVictoryScreen();
+        BuildDefeatScreen();
         ShowMenu(MenuMode.Main);
     }
 
@@ -189,6 +197,7 @@ public class TopHudController : MonoBehaviour
             ShowMenu(MenuMode.Pause);
 
         UpdateHud();
+        CheckGameEndConditions();
     }
 
     private void OnDestroy()
@@ -458,12 +467,13 @@ public class TopHudController : MonoBehaviour
 
         Button button = buttonObject.AddComponent<Button>();
         button.targetGraphic = background;
-        button.onClick.AddListener(ResumeGame);
+        button.onClick.AddListener(CycleGameplaySpeed);
 
         if (bottomContinueSprite == null)
             CreateMenuBoxFrame(buttonRect, menuAccentColor);
 
-        TMP_Text label = CreateText("Label", buttonRect, "DEVAM", 22f, menuAccentColor, TextAlignmentOptions.Center, FontStyles.Normal);
+        _gameplaySpeedButtonText = CreateText("Label", buttonRect, GetGameplaySpeedLabel(), 28f, menuAccentColor, TextAlignmentOptions.Center, FontStyles.Bold);
+        TMP_Text label = _gameplaySpeedButtonText;
         RectTransform labelRect = label.rectTransform;
         labelRect.anchorMin = Vector2.zero;
         labelRect.anchorMax = Vector2.one;
@@ -668,6 +678,158 @@ public class TopHudController : MonoBehaviour
 
         Button quitButton = CreateSpriteMenuButton("QuitButton", buttons, quitButtonSprite, "CIKIS", -mainMenuButtonSpacing * 3f, false);
         quitButton.onClick.AddListener(QuitGame);
+    }
+
+    private void BuildVictoryScreen()
+    {
+        Canvas canvas = GetComponentInParent<Canvas>();
+        if (canvas == null)
+            canvas = FindFirstObjectByType<Canvas>();
+
+        if (canvas == null)
+            return;
+
+        Transform oldRoot = canvas.transform.Find("VictoryRoot");
+        if (oldRoot != null)
+            Destroy(oldRoot.gameObject);
+
+        GameObject rootObject = CreateUIObject("VictoryRoot", canvas.transform);
+        _victoryRoot = rootObject.GetComponent<RectTransform>();
+        _victoryRoot.anchorMin = Vector2.zero;
+        _victoryRoot.anchorMax = Vector2.one;
+        _victoryRoot.offsetMin = Vector2.zero;
+        _victoryRoot.offsetMax = Vector2.zero;
+
+        Image overlay = rootObject.AddComponent<Image>();
+        overlay.color = new Color(0f, 0f, 0f, 0.72f);
+        overlay.raycastTarget = true;
+
+        RectTransform panel = CreateUIObject("VictoryPanel", _victoryRoot).GetComponent<RectTransform>();
+        panel.anchorMin = new Vector2(0.5f, 0.5f);
+        panel.anchorMax = new Vector2(0.5f, 0.5f);
+        panel.pivot = new Vector2(0.5f, 0.5f);
+        panel.anchoredPosition = Vector2.zero;
+        panel.sizeDelta = new Vector2(560f, 300f);
+
+        Image panelImage = panel.gameObject.AddComponent<Image>();
+        panelImage.color = new Color(0.02f, 0.018f, 0.014f, 0.94f);
+        panelImage.raycastTarget = false;
+        CreateMenuBoxFrame(panel, menuAccentColor);
+
+        TMP_Text title = CreateText("Title", panel, "YOL TAMAMLANDI", 38f, menuAccentColor, TextAlignmentOptions.Center, FontStyles.Normal);
+        RectTransform titleRect = title.rectTransform;
+        titleRect.anchorMin = new Vector2(0f, 1f);
+        titleRect.anchorMax = new Vector2(1f, 1f);
+        titleRect.pivot = new Vector2(0.5f, 1f);
+        titleRect.anchoredPosition = new Vector2(0f, -44f);
+        titleRect.sizeDelta = new Vector2(-56f, 54f);
+
+        TMP_Text body = CreateText("Body", panel, "Kabile hedefe ulaştı.", 22f, valueColor, TextAlignmentOptions.Center, FontStyles.Normal);
+        RectTransform bodyRect = body.rectTransform;
+        bodyRect.anchorMin = new Vector2(0f, 1f);
+        bodyRect.anchorMax = new Vector2(1f, 1f);
+        bodyRect.pivot = new Vector2(0.5f, 1f);
+        bodyRect.anchoredPosition = new Vector2(0f, -116f);
+        bodyRect.sizeDelta = new Vector2(-56f, 40f);
+
+        Button mainMenuButton = CreateVictoryButton(panel);
+        mainMenuButton.onClick.AddListener(ReturnToMainMenu);
+
+        _victoryRoot.gameObject.SetActive(false);
+    }
+
+    private void BuildDefeatScreen()
+    {
+        Canvas canvas = GetComponentInParent<Canvas>();
+        if (canvas == null)
+            canvas = FindFirstObjectByType<Canvas>();
+
+        if (canvas == null)
+            return;
+
+        Transform oldRoot = canvas.transform.Find("DefeatRoot");
+        if (oldRoot != null)
+            Destroy(oldRoot.gameObject);
+
+        GameObject rootObject = CreateUIObject("DefeatRoot", canvas.transform);
+        _defeatRoot = rootObject.GetComponent<RectTransform>();
+        _defeatRoot.anchorMin = Vector2.zero;
+        _defeatRoot.anchorMax = Vector2.one;
+        _defeatRoot.offsetMin = Vector2.zero;
+        _defeatRoot.offsetMax = Vector2.zero;
+
+        Image overlay = rootObject.AddComponent<Image>();
+        overlay.color = new Color(0f, 0f, 0f, 0.76f);
+        overlay.raycastTarget = true;
+
+        RectTransform panel = CreateUIObject("DefeatPanel", _defeatRoot).GetComponent<RectTransform>();
+        panel.anchorMin = new Vector2(0.5f, 0.5f);
+        panel.anchorMax = new Vector2(0.5f, 0.5f);
+        panel.pivot = new Vector2(0.5f, 0.5f);
+        panel.anchoredPosition = Vector2.zero;
+        panel.sizeDelta = new Vector2(560f, 300f);
+
+        Image panelImage = panel.gameObject.AddComponent<Image>();
+        panelImage.color = new Color(0.02f, 0.014f, 0.012f, 0.95f);
+        panelImage.raycastTarget = false;
+        CreateMenuBoxFrame(panel, menuAccentColor);
+
+        TMP_Text title = CreateText("Title", panel, "GÖÇ BAŞARISIZ", 38f, menuAccentColor, TextAlignmentOptions.Center, FontStyles.Normal);
+        RectTransform titleRect = title.rectTransform;
+        titleRect.anchorMin = new Vector2(0f, 1f);
+        titleRect.anchorMax = new Vector2(1f, 1f);
+        titleRect.pivot = new Vector2(0.5f, 1f);
+        titleRect.anchoredPosition = new Vector2(0f, -44f);
+        titleRect.sizeDelta = new Vector2(-56f, 54f);
+
+        TMP_Text body = CreateText("Body", panel, "Kabile yolculuğu sürdüremedi.", 22f, valueColor, TextAlignmentOptions.Center, FontStyles.Normal);
+        RectTransform bodyRect = body.rectTransform;
+        bodyRect.anchorMin = new Vector2(0f, 1f);
+        bodyRect.anchorMax = new Vector2(1f, 1f);
+        bodyRect.pivot = new Vector2(0.5f, 1f);
+        bodyRect.anchoredPosition = new Vector2(0f, -116f);
+        bodyRect.sizeDelta = new Vector2(-56f, 40f);
+
+        Button mainMenuButton = CreateVictoryButton(panel);
+        mainMenuButton.onClick.AddListener(ReturnToMainMenu);
+
+        _defeatRoot.gameObject.SetActive(false);
+    }
+
+    private Button CreateVictoryButton(RectTransform parent)
+    {
+        GameObject buttonObject = CreateUIObject("MainMenuButton", parent);
+        RectTransform buttonRect = buttonObject.GetComponent<RectTransform>();
+        buttonRect.anchorMin = new Vector2(0.5f, 0f);
+        buttonRect.anchorMax = new Vector2(0.5f, 0f);
+        buttonRect.pivot = new Vector2(0.5f, 0f);
+        buttonRect.anchoredPosition = new Vector2(0f, 42f);
+        buttonRect.sizeDelta = new Vector2(280f, 64f);
+
+        Image background = buttonObject.AddComponent<Image>();
+        background.color = menuButtonColor;
+        background.raycastTarget = true;
+
+        Button button = buttonObject.AddComponent<Button>();
+        button.targetGraphic = background;
+
+        ColorBlock colors = button.colors;
+        colors.normalColor = menuButtonColor;
+        colors.highlightedColor = menuButtonHoverColor;
+        colors.pressedColor = menuAccentColor;
+        colors.selectedColor = menuButtonHoverColor;
+        button.colors = colors;
+
+        CreateMenuBoxFrame(buttonRect, menuAccentColor);
+
+        TMP_Text label = CreateText("Label", buttonRect, "ANA MENÜ", 23f, menuAccentColor, TextAlignmentOptions.Center, FontStyles.Normal);
+        RectTransform labelRect = label.rectTransform;
+        labelRect.anchorMin = Vector2.zero;
+        labelRect.anchorMax = Vector2.one;
+        labelRect.offsetMin = Vector2.zero;
+        labelRect.offsetMax = Vector2.zero;
+
+        return button;
     }
 
     private RectTransform CreateMenuPanel(RectTransform parent)
@@ -987,6 +1149,12 @@ public class TopHudController : MonoBehaviour
         if (_menuRoot == null)
             return;
 
+        if (_victoryRoot != null)
+            _victoryRoot.gameObject.SetActive(false);
+
+        if (_defeatRoot != null)
+            _defeatRoot.gameObject.SetActive(false);
+
         bool isMainMenu = mode == MenuMode.Main;
         _menuRoot.gameObject.SetActive(true);
         if (_root != null)
@@ -1001,7 +1169,86 @@ public class TopHudController : MonoBehaviour
         if (_startButton != null)
             _startButton.gameObject.SetActive(true);
 
-        Time.timeScale = 0f;
+        PauseTime();
+    }
+
+    private void CheckGameEndConditions()
+    {
+        if (!_gameStarted || _gameEnded)
+            return;
+
+        GameManager gameManager = GameManager.Instance;
+        if (gameManager == null)
+            return;
+
+        if (gameManager.Health <= 0f)
+        {
+            ShowDefeatScreen();
+            Debug.Log("Oyun kaybedildi: Sağlık 0 oldu.");
+            return;
+        }
+
+        if (gameManager.Population <= 0)
+        {
+            ShowDefeatScreen();
+            Debug.Log("Oyun kaybedildi: Nüfus 0 oldu.");
+        }
+    }
+
+    public void ShowVictoryScreen()
+    {
+        _gameStarted = false;
+        _gameEnded = true;
+
+        if (_menuRoot != null)
+            _menuRoot.gameObject.SetActive(false);
+
+        if (_root != null)
+            _root.gameObject.SetActive(false);
+
+        if (_bottomRoot != null)
+            _bottomRoot.gameObject.SetActive(false);
+
+        if (_victoryRoot != null)
+            _victoryRoot.gameObject.SetActive(true);
+
+        PauseTime();
+    }
+
+    public void ShowDefeatScreen()
+    {
+        _gameStarted = false;
+        _gameEnded = true;
+
+        if (_menuRoot != null)
+            _menuRoot.gameObject.SetActive(false);
+
+        if (_root != null)
+            _root.gameObject.SetActive(false);
+
+        if (_bottomRoot != null)
+            _bottomRoot.gameObject.SetActive(false);
+
+        if (_victoryRoot != null)
+            _victoryRoot.gameObject.SetActive(false);
+
+        if (_defeatRoot != null)
+            _defeatRoot.gameObject.SetActive(true);
+
+        PauseTime();
+    }
+
+    public void RestoreGameplayTimeScale()
+    {
+        if (!_gameStarted || _gameEnded)
+            return;
+
+        Time.timeScale = GetGameplayTimeScale();
+    }
+
+    private void ReturnToMainMenu()
+    {
+        ShowMenu(MenuMode.Main);
     }
 
     private void OpenSettings()
@@ -1012,6 +1259,9 @@ public class TopHudController : MonoBehaviour
     private void StartGame()
     {
         _gameStarted = true;
+        _gameEnded = false;
+        _gameplayTimeScaleIndex = 0;
+        UpdateGameplaySpeedButtonText();
         HideMenu();
     }
 
@@ -1028,19 +1278,61 @@ public class TopHudController : MonoBehaviour
         if (_menuRoot != null)
             _menuRoot.gameObject.SetActive(false);
 
+        if (_victoryRoot != null)
+            _victoryRoot.gameObject.SetActive(false);
+
+        if (_defeatRoot != null)
+            _defeatRoot.gameObject.SetActive(false);
+
         if (_root != null)
             _root.gameObject.SetActive(true);
 
         if (_bottomRoot != null)
             _bottomRoot.gameObject.SetActive(true);
 
-        Time.timeScale = 1f;
+        RestoreGameplayTimeScale();
     }
 
     private void QuitGame()
     {
         Time.timeScale = 1f;
         Application.Quit();
+    }
+
+    private void CycleGameplaySpeed()
+    {
+        if (!_gameStarted || _gameEnded)
+            return;
+
+        _gameplayTimeScaleIndex = (_gameplayTimeScaleIndex + 1) % _gameplayTimeScales.Length;
+        UpdateGameplaySpeedButtonText();
+        RestoreGameplayTimeScale();
+        Debug.Log("Oyun hızı: " + GetGameplaySpeedLabel());
+    }
+
+    private float GetGameplayTimeScale()
+    {
+        if (_gameplayTimeScales.Length == 0)
+            return 1f;
+
+        int safeIndex = Mathf.Clamp(_gameplayTimeScaleIndex, 0, _gameplayTimeScales.Length - 1);
+        return _gameplayTimeScales[safeIndex];
+    }
+
+    private string GetGameplaySpeedLabel()
+    {
+        return Mathf.RoundToInt(GetGameplayTimeScale()) + "X";
+    }
+
+    private void UpdateGameplaySpeedButtonText()
+    {
+        if (_gameplaySpeedButtonText != null)
+            _gameplaySpeedButtonText.text = GetGameplaySpeedLabel();
+    }
+
+    private void PauseTime()
+    {
+        Time.timeScale = 0f;
     }
 
     private StatView CreateStat(RectTransform parent, TopHudStat stat, string label, Sprite icon, float index)

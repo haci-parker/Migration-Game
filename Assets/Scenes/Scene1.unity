@@ -622,71 +622,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &538430489
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 1823859698}
-    m_Modifications:
-    - target: {fileID: -8679921383154817045, guid: b6ec094f64814a641b792ee9aa566e81, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.049999237
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: b6ec094f64814a641b792ee9aa566e81, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -0.457
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: b6ec094f64814a641b792ee9aa566e81, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0.66
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: b6ec094f64814a641b792ee9aa566e81, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.67559016
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: b6ec094f64814a641b792ee9aa566e81, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: b6ec094f64814a641b792ee9aa566e81, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0.7372774
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: b6ec094f64814a641b792ee9aa566e81, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: b6ec094f64814a641b792ee9aa566e81, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: b6ec094f64814a641b792ee9aa566e81, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 95
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: b6ec094f64814a641b792ee9aa566e81, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 919132149155446097, guid: b6ec094f64814a641b792ee9aa566e81, type: 3}
-      propertyPath: m_Name
-      value: Meshy_AI_Arctic_Archer_biped_Animation_Walking_frame_rate_24
-      objectReference: {fileID: 0}
-    - target: {fileID: 5866666021909216657, guid: b6ec094f64814a641b792ee9aa566e81, type: 3}
-      propertyPath: m_Controller
-      value: 
-      objectReference: {fileID: 9100000, guid: 78ac1cca8f67d4817bfcfb3728f99076, type: 2}
-    - target: {fileID: 8111781155169087978, guid: b6ec094f64814a641b792ee9aa566e81, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 2100000, guid: f29cbdd20bf764953b96fd38eab359b3, type: 2}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: b6ec094f64814a641b792ee9aa566e81, type: 3}
 --- !u!1 &617359777
 GameObject:
   m_ObjectHideFlags: 0
@@ -1050,11 +985,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!4 &869681109 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: b6ec094f64814a641b792ee9aa566e81, type: 3}
-  m_PrefabInstance: {fileID: 538430489}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &911287141 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 5bfc4498294b4e644ac6772c3d4fdf94, type: 3}
@@ -2328,9 +2258,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 869681109}
   - {fileID: 911287142}
   - {fileID: 690932432}
+  - {fileID: 2070737269}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1823859699
@@ -2739,6 +2669,102 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &2070737268
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1823859698}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 5bfc4498294b4e644ac6772c3d4fdf94, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.04
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 5bfc4498294b4e644ac6772c3d4fdf94, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.449
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 5bfc4498294b4e644ac6772c3d4fdf94, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.39
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 5bfc4498294b4e644ac6772c3d4fdf94, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.67559016
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 5bfc4498294b4e644ac6772c3d4fdf94, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 5bfc4498294b4e644ac6772c3d4fdf94, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.7372774
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 5bfc4498294b4e644ac6772c3d4fdf94, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 5bfc4498294b4e644ac6772c3d4fdf94, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 5bfc4498294b4e644ac6772c3d4fdf94, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 95
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 5bfc4498294b4e644ac6772c3d4fdf94, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 5bfc4498294b4e644ac6772c3d4fdf94, type: 3}
+      propertyPath: m_Name
+      value: Meshy_AI_Arctic_Archer_biped_Animation_Walking_withSkin (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8111781155169087978, guid: 5bfc4498294b4e644ac6772c3d4fdf94, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: f29cbdd20bf764953b96fd38eab359b3, type: 2}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 5bfc4498294b4e644ac6772c3d4fdf94, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2070737271}
+  m_SourcePrefab: {fileID: 100100000, guid: 5bfc4498294b4e644ac6772c3d4fdf94, type: 3}
+--- !u!4 &2070737269 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 5bfc4498294b4e644ac6772c3d4fdf94, type: 3}
+  m_PrefabInstance: {fileID: 2070737268}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &2070737270 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 5bfc4498294b4e644ac6772c3d4fdf94, type: 3}
+  m_PrefabInstance: {fileID: 2070737268}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &2070737271
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2070737270}
+  m_Enabled: 1
+  m_Avatar: {fileID: 9000000, guid: b6ec094f64814a641b792ee9aa566e81, type: 3}
+  m_Controller: {fileID: 9100000, guid: 78ac1cca8f67d4817bfcfb3728f99076, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &2110417404
 GameObject:
   m_ObjectHideFlags: 0

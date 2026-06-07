@@ -6,6 +6,7 @@ public class ClanMovement : MonoBehaviour
     [SerializeField] private float clanSpeed = 2f;
     [SerializeField] private float journeyStartX = -25f;
     [SerializeField] private float journeyDistance = 4800f;
+    [SerializeField] private TopHudController topHudController;
 
     private bool hasWon;
 
@@ -45,6 +46,12 @@ public class ClanMovement : MonoBehaviour
         {
             hasWon = true;
             Debug.Log("Oyun kazanildi.");
+
+            if (topHudController == null)
+                topHudController = FindFirstObjectByType<TopHudController>();
+
+            if (topHudController != null)
+                topHudController.ShowVictoryScreen();
         }
     }
 }

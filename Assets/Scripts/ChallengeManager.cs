@@ -202,7 +202,13 @@ public class ChallengeManager : MonoBehaviour
             _root.gameObject.SetActive(false);
 
         if (resumeTime)
-            Time.timeScale = 1f;
+        {
+            TopHudController topHudController = FindFirstObjectByType<TopHudController>();
+            if (topHudController != null)
+                topHudController.RestoreGameplayTimeScale();
+            else
+                Time.timeScale = 1f;
+        }
     }
 
     private void BuildUI()
